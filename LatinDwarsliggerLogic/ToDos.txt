@@ -1,0 +1,32 @@
+﻿-=Goal=-
+Format texts from The Latin Library in a way that can be printed and bound into dwarsligger-style texs.
+
+-=Requirements=-
+- Take as input a list of .shtml files (eg the twelve pages for the twelve books of the Aeneid)
+- Strip out line numbers (in poetry)
+- Respect <p> and <br> breaks
+- Different .shtml files should have an enforced page break between them
+- Also enforce page breaks between clearly-marked ""sections"" of a longer page (eg individual poems of Catullus or Martial)
+- Two-column format where possible 
+	- If two "sections" could fit side-by-side on one page (again, many of Martial's poems would likely do this), do so
+	- Similarly, if the font size allows two columns of dactylic hexameter to fit on a page, do so
+- Ability to specify a "cover image"
+- User can specify margins, page height, and font size. Default to 8.5" x 8.5" square.
+
+- Consecutive pages A, B, C, E should come out looking like
+
+-------  -------
+|  B  |	 | ∀  |
+|-----|	 |-----|
+|  C  |	 | Ǝ   |
+------	 -------
+
+-=Nice to have=-
+The "next level" would be to format PDFs like this.
+Probably print four pages per side, so each half-side has two pages side-by-side.
+
+-------- 
+| C D  |	
+|------|	
+| E F  |	
+-------	
