@@ -6,13 +6,13 @@
         {
             return verses
                 .Select(verse => verse.Replace("&nbsp;", ""))
-                .Select(verse => DeleteSpanTags(verse));
+                .Select(DeleteSpanTags);
         }
 
         /// <summary>
         /// Find "<span", delete everything through subsequent </span>
         /// </summary>
-        public static string DeleteSpanTags(string line)
+        private static string DeleteSpanTags(string line)
         {
             int start = line.IndexOf("<span");
             if (start == -1) return line; // no span to delete
