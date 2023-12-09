@@ -16,7 +16,7 @@ namespace LatinDwarsliggerTest
             // Assert
             Assert.IsNotNull(lines);
             Assert.IsTrue(lines.Any());
-            Assert.IsTrue(lines.Any(str => str.Contains("rma virumque canō, Trōiae quī prīmus ab ōrīs")));
+            Assert.IsTrue(lines.Any(str => str.Contains("Arma virumque canō, Trōiae quī prīmus ab ōrīs")));
         }
     }
 }
