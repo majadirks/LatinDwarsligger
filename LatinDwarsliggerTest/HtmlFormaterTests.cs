@@ -47,5 +47,36 @@ namespace LatinDwarsliggerTest
                 Assert.AreEqual(expected[i], actual[i]);
             }
         }
+
+        [TestMethod]
+        public void SplitOnBrTags_Test()
+        {
+            // Arrange
+            string[] lines = 
+                [
+                @"</p><p>",
+                @"This is on the first line,",
+                @"as is this.<br>",
+                @"This, however,",
+                @"is the second line<br>",
+                @"and this is the third.",
+                @"</p>"
+                ];
+            string[] expected =
+                [
+                    @"<p>",
+                    @"This is on the first line, as is this.",
+                    @"This, however, is the second line",
+                    @"and this is the third."
+                ];
+            // Act
+            var actual = HtmlFormatter.SplitOnBrTags(lines).ToArray();
+            // Assert
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
     }
 }

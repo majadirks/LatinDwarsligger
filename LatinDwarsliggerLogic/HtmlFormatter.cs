@@ -21,6 +21,12 @@
             return string.Concat(line.AsSpan(0, start), line.AsSpan(end + 7));
         }
 
+        public static IEnumerable<string> RemoveParagraphCloseTags(IEnumerable<string> lines)
+        {
+            return lines.Select(line => line.Replace("</p>", "").Trim())
+                .Where(line => !string.IsNullOrEmpty(line));
+        }
+
         /// <summary>
         /// Create an IEnumerable of strings based on the input,
         /// but rearrange so that new strings are based on br tags
@@ -28,7 +34,7 @@
         /// rather than line breaks in the original file.
         /// (Possibly retain opening p as its own line for later use?)
         /// </summary>
-        public static IEnumerable<string> AlignBreaks(IEnumerable<string> text)
+        public static IEnumerable<string> SplitOnBrTags(IEnumerable<string> text)
         {
             throw new NotImplementedException();
         }
