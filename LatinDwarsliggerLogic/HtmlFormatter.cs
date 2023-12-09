@@ -40,12 +40,16 @@
         /// (Possibly retain opening p as its own line for later use?)
         /// </summary>
         public static IEnumerable<string> SplitOnBrTags(IEnumerable<string> text)
-        => string.
+        {
+            var x = string.
                 Join(" ", text)
-                .Split("<br>")
+                .Split("<br>");
+            var y = x
                 .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()
                 .Select(line => line.Trim());
+            return y;
+        }
                 
 
         public static IEnumerable<ChunkOfText> DivideTextIntoChunks(string[] text)

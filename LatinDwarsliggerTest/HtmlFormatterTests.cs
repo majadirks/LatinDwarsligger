@@ -65,6 +65,22 @@ namespace LatinDwarsliggerTest
         }
 
         [TestMethod]
+        public void MoveParagraphBeginTagsToOwnLine_TMultipleInLine_Test()
+        {
+            // Arrange
+            string[] lines = [@"<p>abc</p><p>def</p>"];
+            string[] expected = [@"<p>", @"abc</p>", @"<p>", @"def</p>"];
+            // Act
+            string[] actual = HtmlFormatter.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
+            // Assert
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+        [TestMethod]
         public void SplitOnBrTags_Test()
         {
             // Arrange
