@@ -3,7 +3,7 @@
 namespace LatinDwarsliggerTest
 {
     [TestClass]
-    public class HtmlFormaterTests
+    public class HtmlFormatterTests
     {
         [TestMethod]
         public void StripLineNumbers_Test()
@@ -40,6 +40,22 @@ namespace LatinDwarsliggerTest
             // Act
             string[] actual = HtmlFormatter.StripLineNumbers(lines).ToArray();
 
+            // Assert
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+        [TestMethod]
+        public void MoveParagraphBeginTagsToOwnLine_Test()
+        {
+            // Arrange
+            string[] lines = [@"<p>Hello, World!</p>", @"<p>How are you?</p>"];
+            string[] expected = [@"<p>", @"Hello, World!</p>", @"<p>", @"How are you?</p>"];
+            // Act
+            string[] actual = HtmlFormatter.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)

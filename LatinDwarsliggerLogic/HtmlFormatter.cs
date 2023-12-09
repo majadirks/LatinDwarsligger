@@ -21,12 +21,16 @@
             return string.Concat(line.AsSpan(0, start), line.AsSpan(end + 7));
         }
 
-        public static IEnumerable<string> RemoveParagraphCloseTags(IEnumerable<string> lines)
+        public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
         => lines.Select(line => line.Replace("</p>", ""))
                 .Where(line => !string.IsNullOrEmpty(line));
 
-        public static IEnumerable<string> ReplaceBrWithSpace(IEnumerable<string> lines)
-            => lines.Select(line => line.Replace("<br>", " "));
+        public static IEnumerable<string> MoveParagraphBeginTagsToOwnLine(this IEnumerable<string> lines)
+        => lines
+                .SelectMany<string, string>(line => line.Contains("<p>") ? 
+                ["<p>", line.Replace("<p>", "").Trim()] : 
+                [line]);
+        
 
         /// <summary>
         /// Create an IEnumerable of strings based on the input,
@@ -36,11 +40,12 @@
         /// (Possibly retain opening p as its own line for later use?)
         /// </summary>
         public static IEnumerable<string> SplitOnBrTags(IEnumerable<string> text)
-        {
-            // replace <br> with space
-            // call RemoveParagraphCloseTags
-            throw new NotImplementedException();
-        }
+        => string.
+                Join(" ", text)
+                .Split("<br>")
+                .RemoveParagraphCloseTags()
+                .Select(line => line.Trim())
+                .MoveParagraphBeginTagsToOwnLine();
 
         public static IEnumerable<ChunkOfText> DivideTextIntoChunks(string[] text)
         {
