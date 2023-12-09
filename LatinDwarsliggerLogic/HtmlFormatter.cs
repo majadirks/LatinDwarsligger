@@ -17,6 +17,7 @@ namespace LatinDwarsliggerLogic
             formatted = formatted.RemoveDivTags();
             formatted = formatted.Skip(1); // remove header stuff
             formatted = formatted.RemoveRedundantParagraphTags();
+            formatted = formatted.Select(line => line.Trim());
             var chunks = formatted.ParseTextIntoChunks();
             return chunks;
         }
