@@ -4,6 +4,22 @@ namespace LatinDwarsliggerLogic
 {
     public static class HtmlFormatter
     {
+        public static IEnumerable<string> FormatHtmlFile(string path)
+        {
+            var lines = File.ReadAllLines(path);
+
+            var formatted = lines.StripTagAttributes()
+                .MoveParagraphBeginTagsToOwnLine()
+                .SplitOnBrTags()
+                .StripLineNumbers()
+                .RemoveParagraphCloseTags()
+                .RemoveDivTags()
+                .Skip(1) // remove header stuff
+                .RemoveRedundantParagraphTags()
+                .ToArray();
+            return formatted;
+
+        }
         public static IEnumerable<string> StripTagAttributes(this IEnumerable<string> lines)
         => lines.Select(StripTagAttributes);
 
@@ -21,14 +37,14 @@ namespace LatinDwarsliggerLogic
                         copy.Add(c);
                         continue;
                     }
-                    while (c != ' ')
+                    while (c != ' ' && i < line.Length - 1)
                     {
                         copy.Add(c);
                         i++;
                         c = line[i];
                     }
 
-                    while (c != '>')
+                    while (c != '>' && i < line.Length - 1)
                     {
                         i++;
                         c = line[i];
@@ -39,7 +55,7 @@ namespace LatinDwarsliggerLogic
             return new(copy.ToArray());
         }
 
-        public static IEnumerable<string> StripLineNumbers(IEnumerable<string> verses)
+        public static IEnumerable<string> StripLineNumbers(this IEnumerable<string> verses)
         {
             return verses
                 .Select(verse => verse.Replace("&nbsp;", ""))
@@ -89,7 +105,7 @@ namespace LatinDwarsliggerLogic
         /// rather than line breaks in the original file.
         /// (Possibly retain opening p as its own line for later use?)
         /// </summary>
-        public static IEnumerable<string> SplitOnBrTags(IEnumerable<string> text)
+        public static IEnumerable<string> SplitOnBrTags(this IEnumerable<string> text)
         {
             var x = string.
                 Join(" ", text)
@@ -100,11 +116,34 @@ namespace LatinDwarsliggerLogic
                 .Select(line => line.Trim());
             return y;
         }
-                
 
-        public static IEnumerable<ChunkOfText> DivideTextIntoChunks(string[] text)
+        public static IEnumerable<string> RemoveRedundantParagraphTags(this IEnumerable<string> lines)
         {
-            throw new NotImplementedException();
+            var inputArray = lines
+                .SkipWhile(line => line == "<p>") // skip any starting <p> tags
+                .ToArray();
+            int lineCount = inputArray.Length;
+            var copy = new List<string>(lineCount);
+            for (int i = 0; i < lineCount; i++)
+            {
+                string line = inputArray[i];
+                copy.Add(line);
+                if (line == "<p>")
+                {
+                    i++;
+                    if (i < inputArray.Length)
+                        line = inputArray[i];
+                    if (line == "<p>") continue;
+                }
+            }
+            if (copy.Last() == "<p>")
+                copy = copy[0..(copy.Count - 1)];
+            return copy;
+        }
+
+        public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
+        {
+            return text.Select(line => line.Replace("<div>", ""));
         }
     }
 }

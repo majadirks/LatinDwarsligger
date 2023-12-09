@@ -129,5 +129,13 @@ namespace LatinDwarsliggerTest
                 Assert.AreEqual(expected[i], actual[i]);
             }
         }
+
+        [TestMethod]
+        public void FormatAeneid()
+        {
+            string path = "resources/aen1.html";
+            var actual = HtmlFormatter.FormatHtmlFile(path);
+            ;
+        }
     }
 }
