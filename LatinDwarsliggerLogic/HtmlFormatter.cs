@@ -22,10 +22,11 @@
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(IEnumerable<string> lines)
-        {
-            return lines.Select(line => line.Replace("</p>", "").Trim())
+        => lines.Select(line => line.Replace("</p>", ""))
                 .Where(line => !string.IsNullOrEmpty(line));
-        }
+
+        public static IEnumerable<string> ReplaceBrWithSpace(IEnumerable<string> lines)
+            => lines.Select(line => line.Replace("<br>", " "));
 
         /// <summary>
         /// Create an IEnumerable of strings based on the input,
@@ -36,6 +37,8 @@
         /// </summary>
         public static IEnumerable<string> SplitOnBrTags(IEnumerable<string> text)
         {
+            // replace <br> with space
+            // call RemoveParagraphCloseTags
             throw new NotImplementedException();
         }
 
