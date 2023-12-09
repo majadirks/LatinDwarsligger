@@ -76,14 +76,17 @@ namespace LatinDwarsliggerTest
                 @"This, however,",
                 @"is the second line<br>",
                 @"and this is the third.",
-                @"</p>"
+                @"</p>",
+                @"<p>This is the fourth.</p>"
                 ];
             string[] expected =
                 [
                     @"<p>",
                     @"This is on the first line, as is this.",
                     @"This, however, is the second line",
-                    @"and this is the third."
+                    @"and this is the third.",
+                    @"</p><p>",
+                    @"This is the fourth."
                 ];
             // Act
             var actual = HtmlFormatter.SplitOnBrTags(lines).ToArray();

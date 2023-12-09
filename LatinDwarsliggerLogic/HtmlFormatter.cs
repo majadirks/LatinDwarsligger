@@ -30,7 +30,7 @@
                 .SelectMany<string, string>(line => line.Contains("<p>") ? 
                 ["<p>", line.Replace("<p>", "").Trim()] : 
                 [line]);
-        
+
 
         /// <summary>
         /// Create an IEnumerable of strings based on the input,
@@ -43,9 +43,10 @@
         => string.
                 Join(" ", text)
                 .Split("<br>")
+                .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()
-                .Select(line => line.Trim())
-                .MoveParagraphBeginTagsToOwnLine();
+                .Select(line => line.Trim());
+                
 
         public static IEnumerable<ChunkOfText> DivideTextIntoChunks(string[] text)
         {
