@@ -18,5 +18,6 @@ namespace LatinDwarsliggerLogic
         public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)lines).GetEnumerator();
         
         IEnumerator IEnumerable.GetEnumerator() => lines.GetEnumerator(); 
+        public override string ToString() => string.Join(Environment.NewLine, lines);
     }
 }

@@ -4,20 +4,20 @@ namespace LatinDwarsliggerLogic
 {
     public static class HtmlFormatter
     {
-        public static IEnumerable<string> FormatHtmlFile(string path)
+        public static IEnumerable<ChunkOfText> FormatHtmlFile(string path)
         {
             var lines = File.ReadAllLines(path);
 
-            var formatted = lines.StripTagAttributes()
-                .MoveParagraphBeginTagsToOwnLine()
-                .SplitOnBrTags()
-                .StripLineNumbers()
-                .RemoveParagraphCloseTags()
-                .RemoveDivTags()
-                .Skip(1) // remove header stuff
-                .RemoveRedundantParagraphTags()
-                .ToArray();
-            return formatted;
+            var formatted = lines.StripTagAttributes();
+            formatted = formatted.MoveParagraphBeginTagsToOwnLine();
+            formatted = formatted.SplitOnBrTags();
+            formatted = formatted.StripLineNumbers();
+            formatted = formatted.RemoveParagraphCloseTags();
+            formatted = formatted.RemoveDivTags();
+            formatted = formatted.Skip(1); // remove header stuff
+            formatted = formatted.RemoveRedundantParagraphTags();
+            var chunks = formatted.ParseTextIntoChunks();
+            return chunks;
 
         }
         public static IEnumerable<string> StripTagAttributes(this IEnumerable<string> lines)
@@ -119,9 +119,7 @@ namespace LatinDwarsliggerLogic
 
         public static IEnumerable<string> RemoveRedundantParagraphTags(this IEnumerable<string> lines)
         {
-            var inputArray = lines
-                .SkipWhile(line => line == "<p>") // skip any starting <p> tags
-                .ToArray();
+            var inputArray = lines.ToArray();
             int lineCount = inputArray.Length;
             var copy = new List<string>(lineCount);
             for (int i = 0; i < lineCount; i++)
@@ -144,6 +142,36 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
         {
             return text.Select(line => line.Replace("<div>", ""));
+        }
+
+        public static IEnumerable<ChunkOfText> ParseTextIntoChunks(this IEnumerable<string> lines)
+        {
+            string[] lineArray = lines.ToArray();
+            var chunks = new List<ChunkOfText>();
+            for(int i = 0; i < lineArray.Length; i++)
+            {
+                string line = lineArray[i];
+                if (line == "<p>" && i < lineArray.Length - 1)
+                {
+                    i++;
+                    line = lineArray[i];
+                    var linesInChunk = new List<string>();
+                    while (i < lineArray.Length - 1 && lineArray[i] != "<p>")
+                    {
+                        linesInChunk.Add(line);
+                        i++;
+                        line = lineArray[i];
+                    }
+                    chunks.Add(new(linesInChunk));
+                }
+                else
+                {
+                    chunks.Add(new([line]));
+                }
+                if (i < lineArray.Length && lineArray[i] == "<p>")
+                    i--;
+            }
+            return chunks;
         }
     }
 }

@@ -131,9 +131,52 @@ namespace LatinDwarsliggerTest
         }
 
         [TestMethod]
+        public void RemoveRedundantParagraphTags_Test()
+        {
+            // Arrange
+            string[] input =
+                [
+                    @"<p>",
+                    @"<p>",
+                    @"Arma virumque canō, Trōiae quī prīmus ab ōrīs",
+                    @"Ītaliam, fātō profugus, Lāvīniaque vēnit",
+                    @"<p>",
+                    @"Mūsa, mihī causās memorā, quō nūmine laesō,",
+                    @"quidve dolēns, rēgīna deum tot volvere cāsūs",
+                    @"<p>",
+                    @"<p>",
+                    @"<p>",
+                    @"Urbs antīqua fuit, Tyriī tenuēre colōnī,"
+                ];
+
+            string[] expected =
+                [
+                    @"<p>", // fix duplicate
+                    @"Arma virumque canō, Trōiae quī prīmus ab ōrīs",
+                    @"Ītaliam, fātō profugus, Lāvīniaque vēnit",
+                    @"<p>",
+                    @"Mūsa, mihī causās memorā, quō nūmine laesō,",
+                    @"quidve dolēns, rēgīna deum tot volvere cāsūs",
+                    @"<p>", // fix triplicate
+                    @"Urbs antīqua fuit, Tyriī tenuēre colōnī,"
+                ];
+
+            // Act
+            string[] actual = input.RemoveRedundantParagraphTags().ToArray();
+
+            // Assert
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+
+        [TestMethod]
         public void FormatAeneid()
         {
-            string path = "resources/aen1.html";
+            string path = "resources /aen1.html";
             var actual = HtmlFormatter.FormatHtmlFile(path);
             ;
         }
