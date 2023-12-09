@@ -176,7 +176,7 @@ namespace LatinDwarsliggerTest
         [TestMethod]
         public void FormatAeneid()
         {
-            string path = "resources /aen1.html";
+            string path = "resources/aen1.html";
             var actual = HtmlFormatter.FormatHtmlFile(path);
             ;
         }
