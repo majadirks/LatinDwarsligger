@@ -5,9 +5,10 @@ namespace LatinDwarsliggerLogic
     public static class HtmlFormatter
     {
         public static IEnumerable<ChunkOfText> FormatHtmlFile(string path)
+            => File.ReadAllLines(path).FormatHtmlCode();
+        
+        public static IEnumerable<ChunkOfText> FormatHtmlCode(this string[] lines)
         {
-            var lines = File.ReadAllLines(path);
-
             var formatted = lines.StripTagAttributes();
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
@@ -18,8 +19,9 @@ namespace LatinDwarsliggerLogic
             formatted = formatted.RemoveRedundantParagraphTags();
             var chunks = formatted.ParseTextIntoChunks();
             return chunks;
-
         }
+
+
         public static IEnumerable<string> StripTagAttributes(this IEnumerable<string> lines)
         => lines.Select(StripTagAttributes);
 
@@ -176,7 +178,7 @@ namespace LatinDwarsliggerLogic
                 if (i < lineArray.Length && lineArray[i] == "<p>")
                     i--;
             }
-            return chunks;
+            return chunks.Where(chunk => chunk.Any(line => !string.IsNullOrWhiteSpace(line)));
         }
     }
 }
