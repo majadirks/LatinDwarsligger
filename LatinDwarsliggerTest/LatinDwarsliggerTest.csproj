@@ -20,4 +20,10 @@
     <ProjectReference Include="..\LatinDwarsliggerLogic\LatinDwarsliggerLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="resources\aen1.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
