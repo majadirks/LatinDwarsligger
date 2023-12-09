@@ -2,7 +2,7 @@
 
 namespace LatinDwarsliggerLogic
 {
-    public static class HtmlFormatter
+    public static class HtmlCleaner
     {
         public static IEnumerable<ChunkOfText> FormatHtmlFile(string path)
             => File.ReadAllLines(path).FormatHtmlCode();

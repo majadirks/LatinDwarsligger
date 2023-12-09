@@ -38,7 +38,7 @@ namespace LatinDwarsliggerTest
             };
 
             // Act
-            string[] actual = HtmlFormatter.StripLineNumbers(lines).ToArray();
+            string[] actual = HtmlCleaner.StripLineNumbers(lines).ToArray();
 
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
@@ -55,7 +55,7 @@ namespace LatinDwarsliggerTest
             string[] lines = [@"<p>Hello, World!</p>", @"<p>How are you?</p>"];
             string[] expected = [@"<p>", @"Hello, World!</p>", @"<p>", @"How are you?</p>"];
             // Act
-            string[] actual = HtmlFormatter.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
+            string[] actual = HtmlCleaner.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
@@ -71,7 +71,7 @@ namespace LatinDwarsliggerTest
             string[] lines = [@"<p>abc</p><p>def</p>"];
             string[] expected = [@"<p>", @"abc</p>", @"<p>", @"def</p>"];
             // Act
-            string[] actual = HtmlFormatter.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
+            string[] actual = HtmlCleaner.MoveParagraphBeginTagsToOwnLine(lines).ToArray();
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
@@ -105,7 +105,7 @@ namespace LatinDwarsliggerTest
                     @"This is the fourth."
                 ];
             // Act
-            var actual = HtmlFormatter.SplitOnBrTags(lines).ToArray();
+            var actual = HtmlCleaner.SplitOnBrTags(lines).ToArray();
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
@@ -174,7 +174,7 @@ namespace LatinDwarsliggerTest
 
 
         [TestMethod]
-        public void FormatAeneid()
+        public void CleanAeneid()
         {
             // arrange
             string rawHtml = @"
@@ -245,7 +245,7 @@ impulerit. Tantaene animīs caelestibus īrae?
                 ];
 
             // Act
-            var actual = HtmlFormatter.FormatHtmlCode(rawHtmlLines).ToArray();
+            var actual = HtmlCleaner.FormatHtmlCode(rawHtmlLines).ToArray();
 
             // Assert
             Assert.AreEqual(expected.Length, actual.Length);
