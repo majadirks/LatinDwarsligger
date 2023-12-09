@@ -256,5 +256,12 @@ impulerit. Tantaene animīs caelestibus īrae?
                 Assert.AreEqual(expectedCot, actualCot);
             }
         }
+
+        [TestMethod]
+        public void CleanCatullus()
+        {
+            var actual = HtmlCleaner.FormatHtmlFile("resources/Catullus.htm");
+            ;
+        }
     }
 }
