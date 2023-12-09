@@ -65,7 +65,7 @@ namespace LatinDwarsliggerTest
         }
 
         [TestMethod]
-        public void MoveParagraphBeginTagsToOwnLine_TMultipleInLine_Test()
+        public void MoveParagraphBeginTagsToOwnLine_MultipleInLine_Test()
         {
             // Arrange
             string[] lines = [@"<p>abc</p><p>def</p>"];
@@ -101,7 +101,7 @@ namespace LatinDwarsliggerTest
                     @"This is on the first line, as is this.",
                     @"This, however, is the second line",
                     @"and this is the third.",
-                    @"</p><p>",
+                    @"<p>",
                     @"This is the fourth."
                 ];
             // Act

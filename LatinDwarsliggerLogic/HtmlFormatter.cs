@@ -26,10 +26,23 @@
                 .Where(line => !string.IsNullOrEmpty(line));
 
         public static IEnumerable<string> MoveParagraphBeginTagsToOwnLine(this IEnumerable<string> lines)
-        => lines
-                .SelectMany<string, string>(line => line.Contains("<p>") ? 
-                ["<p>", line.Replace("<p>", "").Trim()] : 
-                [line]);
+        {
+            var newLines = new List<string>(capacity: lines.Count());
+            foreach (string line in lines)
+            {
+                string copy = new(line);
+                while (copy.Contains("<p>") && copy.Length > 3)
+                {
+                    int startIndex = copy.IndexOf("<p>");
+                    if (startIndex > 0)
+                        newLines.Add(copy[..startIndex]);
+                    newLines.Add("<p>");
+                    copy = copy[(startIndex + 3)..];
+                }
+                newLines.Add(copy);
+            }
+            return newLines.Select(line => line.Trim()).Where(line => !string.IsNullOrWhiteSpace(line));
+        }
 
 
         /// <summary>
