@@ -126,15 +126,20 @@ namespace LatinDwarsliggerLogic
             {
                 string line = inputArray[i];
                 copy.Add(line);
-                if (line == "<p>")
+
+                if (line != "<p>") continue; 
+
+                // At this point, we've just added a <p> tag,
+                // so skip any subsequent <p> tags
+                while (line == "<p>" && i < inputArray.Length - 1)
                 {
                     i++;
-                    if (i < inputArray.Length)
-                        line = inputArray[i];
-                    if (line == "<p>") continue;
+                    line = inputArray[i];
                 }
+                // We've reached the next non-<p> line, so add it
+                copy.Add(line);
             }
-            if (copy.Last() == "<p>")
+            if (copy.Last() == "<p>") // Don't need a <p> at the end
                 copy = copy[0..(copy.Count - 1)];
             return copy;
         }
