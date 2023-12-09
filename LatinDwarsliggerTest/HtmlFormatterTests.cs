@@ -113,5 +113,21 @@ namespace LatinDwarsliggerTest
                 Assert.AreEqual(expected[i], actual[i]);
             }
         }
+
+        [TestMethod]
+        public void StripTagAttributes_Test()
+        {
+            // Arrange
+            string[] input = [@"<a href=""https://www.thelatinlibrary.com/vergil/aen1.shtml"">Aeneid</a><br><p class=""poem"">Aeneas scopulum interea conscendit</p>"];
+            string[] expected = [@"<a>Aeneid</a><br><p>Aeneas scopulum interea conscendit</p>"];
+            // Act
+            string[] actual = input.StripTagAttributes().ToArray();
+            //Assert
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
     }
 }

@@ -1,7 +1,44 @@
-﻿namespace LatinDwarsliggerLogic
+﻿using System.ComponentModel;
+
+namespace LatinDwarsliggerLogic
 {
     public static class HtmlFormatter
     {
+        public static IEnumerable<string> StripTagAttributes(this IEnumerable<string> lines)
+        => lines.Select(StripTagAttributes);
+
+        private static string StripTagAttributes(string line)
+        {
+            var copy = new List<char>(line.Length);
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+                if (c == '<')
+                {
+                    bool isEnd = i < line.Length - 1 && line[i + 1] == '/';
+                    if (isEnd)
+                    {
+                        copy.Add(c);
+                        continue;
+                    }
+                    while (c != ' ')
+                    {
+                        copy.Add(c);
+                        i++;
+                        c = line[i];
+                    }
+
+                    while (c != '>')
+                    {
+                        i++;
+                        c = line[i];
+                    }
+                }
+                copy.Add(c);
+            }
+            return new(copy.ToArray());
+        }
+
         public static IEnumerable<string> StripLineNumbers(IEnumerable<string> verses)
         {
             return verses
