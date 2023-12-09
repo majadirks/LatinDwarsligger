@@ -15,14 +15,14 @@ namespace LatinDwarsliggerLogic
     {
         public ChunkArranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
         {
-            this.font = font;
+            this.Font = font;
             PageDoubleHeightInches = pageDoubleHeightInches;
             PageWidthInches = pageWidthInches;
             LeftRightMarginInches = leftRightMarginInches;
             TopBottomMarginInches = topBottomMarginInches;
         }
 
-        public Font font {get; init;}
+        public Font Font {get; init;}
         public decimal PageDoubleHeightInches {get; init;}
         public decimal PageWidthInches { get; init; }
         public decimal LeftRightMarginInches {get; init; }
