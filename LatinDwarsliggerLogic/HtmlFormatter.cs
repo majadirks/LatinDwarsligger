@@ -2,7 +2,7 @@
 {
     public static class HtmlFormatter
     {
-        public static IEnumerable<string> StripLineNumbers(string[] verses)
+        public static IEnumerable<string> StripLineNumbers(IEnumerable<string> verses)
         {
             return verses
                 .Select(verse => verse.Replace("&nbsp;", ""))
@@ -10,7 +10,7 @@
         }
 
         /// <summary>
-        /// Find "<span", delete everything through subsequent </span>
+        /// Find opening "span" tag and delete everything through its close
         /// </summary>
         private static string DeleteSpanTags(string line)
         {
@@ -18,7 +18,24 @@
             if (start == -1) return line; // no span to delete
             int end = line.IndexOf("</span>");
             if (end == -1) return line; // badly formed line; ignore
-            return line.Substring(0, start) + line.Substring(end + 7);
+            return string.Concat(line.AsSpan(0, start), line.AsSpan(end + 7));
+        }
+
+        /// <summary>
+        /// Create an IEnumerable of strings based on the input,
+        /// but rearrange so that new strings are based on br tags
+        /// and p tags
+        /// rather than line breaks in the original file.
+        /// (Possibly retain opening p as its own line for later use?)
+        /// </summary>
+        public static IEnumerable<string> AlignBreaks(IEnumerable<string> text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IEnumerable<ChunkOfText> DivideTextIntoChunks(string[] text)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LatinDwarsliggerLogic
 {
 
-    internal class ChunkOfText : IEnumerable<string>
+    public class ChunkOfText : IEnumerable<string>
     {
         private string[] lines;
         public ChunkOfText(IEnumerable<string> lines)
