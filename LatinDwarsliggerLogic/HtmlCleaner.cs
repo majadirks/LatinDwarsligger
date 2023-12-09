@@ -2,6 +2,12 @@
 
 namespace LatinDwarsliggerLogic
 {
+
+    /// <summary>
+    /// Responsible for taking an HTML file from The Latin Library
+    /// And converting it into an enumerable of ChunkOfText objects
+    /// With no line numbers, no HTML tags, etc.
+    /// </summary>
     public static class HtmlCleaner
     {
         public static IEnumerable<ChunkOfText> FormatHtmlFile(string path)
