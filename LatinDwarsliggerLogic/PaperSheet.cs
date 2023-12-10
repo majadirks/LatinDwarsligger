@@ -18,7 +18,7 @@ namespace LatinDwarsliggerLogic
     /// ------	 -------
 
     /// </summary>
-    internal class PaperSheet
+    public class PaperSheet
     {
         public PaperSheet(HalfSide sideA, HalfSide sideB, HalfSide sideC, HalfSide sideD)
         {

@@ -25,16 +25,18 @@ namespace LatinDwarsliggerLogic
     /// </summary>
     public class ChunkArranger
     {
-        public ChunkArranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
+        public ChunkArranger(Graphics graphics, Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
         {
-            Font = font;
+            this.graphics = graphics;
+            this.font = font;
             PageDoubleHeightInches = pageDoubleHeightInches;
             PageWidthInches = pageWidthInches;
             LeftRightMarginInches = leftRightMarginInches;
             TopBottomMarginInches = topBottomMarginInches;
         }
 
-        public Font Font { get; init; }
+        private Font font;
+        private Graphics graphics;
         public decimal PageDoubleHeightInches { get; init; }
         public decimal PageWidthInches { get; init; }
         public decimal LeftRightMarginInches { get; init; }
@@ -42,7 +44,7 @@ namespace LatinDwarsliggerLogic
 
         public IEnumerable<PaperSheet> ArrangeChunks(IEnumerable<ChunkOfText> chunks)
         {
-
+            throw new NotImplementedException();
         }
 
     }
