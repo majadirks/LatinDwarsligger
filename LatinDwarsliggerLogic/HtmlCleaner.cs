@@ -118,7 +118,8 @@ namespace LatinDwarsliggerLogic
         {
             var x = string.
                 Join(" ", text)
-                .Split("<br>");
+                .Split("<br>")
+                .SelectMany(str => str.Split("</br>"));
             var y = x
                 .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()

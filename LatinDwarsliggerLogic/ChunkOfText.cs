@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +12,7 @@ namespace LatinDwarsliggerLogic
 
     public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
     {
-        private string[] lines;
+        private readonly string[] lines;
         public ChunkOfText(IEnumerable<string> lines)
         {
             this.lines = lines.ToArray();
@@ -51,6 +53,15 @@ namespace LatinDwarsliggerLogic
             return hashCode;
         }
 
+#pragma warning disable CA1416 // Validate platform compatibility
+        public (float width, float height) GetSize(Graphics graphics, Font font)
+        {
+            IEnumerable<SizeF> widths = lines.Select(line => graphics.MeasureString(line, font, line.Length, StringFormat.GenericTypographic));
+            float maxWidth = widths.Select(w => w.Width).Max();
+                float height = widths.Select(w => w.Height).Sum();
+                return (maxWidth, height);
+        }
+#pragma warning restore CA1416 // Validate platform compatibility
 
     }
 }
