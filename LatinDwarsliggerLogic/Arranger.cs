@@ -43,7 +43,7 @@ namespace LatinDwarsliggerLogic
         public decimal LeftRightMarginInches { get; init; }
         public decimal TopBottomMarginInches { get; init; }
 
-        public IEnumerable<PaperSheet> ArrangeChunks(IEnumerable<Paragraph> chunks)
+        public IEnumerable<PaperSheet> Arrange(IEnumerable<Paragraph> paragraphs)
         {
             // Figure out what will fit in column A1.
             // Then figure out what will go in "the next column".
@@ -59,16 +59,21 @@ namespace LatinDwarsliggerLogic
             Column colA = new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches);
             float halfSideHeightInches = Convert.ToSingle(HalfSideHeightInches);
 
-            foreach (var chunk in chunks) //todo : flatten?
+            string[] lines = paragraphs
+                .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
+                .SkipLast(1) // ignore paragraph break
+                .ToArray();
+
+            for (int i = 0;  colA.Height < halfSideHeightInches; i++)
             {
-                foreach (string line in chunk)
-                {
-                    while (colA.Height < halfSideHeightInches)
-                    {
-                        colA.Contents.Add(line);
-                    }  
-                }
+                string line = lines[i];
+                colA.Contents.Add(line);
             }
+
+            HalfSide dummy = new HalfSide(colA);
+            PaperSheet dummySheet = new(dummy, dummy, dummy, dummy);
+            ;
+            throw new NotImplementedException();
         }
 
     }

@@ -6,25 +6,25 @@ namespace LatinDwarsliggerLogic;
 public record ChunkSize(double WidthInInches, double HeightInInches);
 public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
 {
-    private readonly string[] lines;
+    public string[] Lines { get; init; }
     public Paragraph(IEnumerable<string> lines)
     {
-        this.lines = lines.ToArray();
+        this.Lines = lines.ToArray();
     }
-    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)lines).GetEnumerator();
+    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)Lines).GetEnumerator();
     
-    IEnumerator IEnumerable.GetEnumerator() => lines.GetEnumerator(); 
-    public override string ToString() => string.Join(Environment.NewLine, lines);
+    IEnumerator IEnumerable.GetEnumerator() => Lines.GetEnumerator(); 
+    public override string ToString() => string.Join(Environment.NewLine, Lines);
 
     public bool Equals(Paragraph? other)
     {
         if (other == null) return false;
-        if (this.lines.Length != other.lines.Length) 
+        if (this.Lines.Length != other.Lines.Length) 
             return false;
-        for (int i = 0; i < this.lines.Length; i++)
+        for (int i = 0; i < this.Lines.Length; i++)
         {
-            string myLine = this.lines[i];
-            string otherLine = other.lines[i];
+            string myLine = this.Lines[i];
+            string otherLine = other.Lines[i];
             if (myLine != otherLine) 
                 return false;
         }
@@ -39,9 +39,9 @@ public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
         int hashCode = 39;
         unchecked
         {
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < Lines.Length; i++)
             {
-                hashCode = hashCode + 17 * lines[i].GetHashCode();
+                hashCode = hashCode + 17 * Lines[i].GetHashCode();
             }
         }
         return hashCode;
@@ -49,8 +49,8 @@ public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
 
     public ChunkSize GetSize(Font font)
     {
-        float width = lines.Width(font);
-        float height = lines.Height(font);
+        float width = Lines.Width(font);
+        float height = Lines.Height(font);
         return new(WidthInInches: width, HeightInInches: height);
     }
 
