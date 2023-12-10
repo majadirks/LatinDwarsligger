@@ -1,4 +1,6 @@
-﻿namespace LatinDwarsliggerLogic;
+﻿using System.Collections;
+
+namespace LatinDwarsliggerLogic;
 public class HalfSide
 {
     private readonly Column leftColumn;
@@ -11,11 +13,14 @@ public class HalfSide
     }
 }
 
-public class Column
+public class Column : IEnumerable<string>
 {
     public IEnumerable<string> Contents { get; init; }
     public Column(IEnumerable<string> contents)
     {
         this.Contents = contents.ToList();
     }
+    public IEnumerator<string> GetEnumerator() => Contents.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Contents).GetEnumerator();
+    
 }
