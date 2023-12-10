@@ -11,22 +11,13 @@ namespace LatinDwarsliggerLogic
     /// Given some chunks of text,
     /// decide how to lay them out on a page
     /// </summary>
-    internal class ChunkArranger
+    public class ChunkArranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
     {
-        public ChunkArranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
-        {
-            this.Font = font;
-            PageDoubleHeightInches = pageDoubleHeightInches;
-            PageWidthInches = pageWidthInches;
-            LeftRightMarginInches = leftRightMarginInches;
-            TopBottomMarginInches = topBottomMarginInches;
-        }
-
-        public Font Font {get; init;}
-        public decimal PageDoubleHeightInches {get; init;}
-        public decimal PageWidthInches { get; init; }
-        public decimal LeftRightMarginInches {get; init; }
-        public decimal TopBottomMarginInches { get; init; }
+        public Font Font { get; init; } = font;
+        public decimal PageDoubleHeightInches { get; init; } = pageDoubleHeightInches;
+        public decimal PageWidthInches { get; init; } = pageWidthInches;
+        public decimal LeftRightMarginInches { get; init; } = leftRightMarginInches;
+        public decimal TopBottomMarginInches { get; init; } = topBottomMarginInches;
 
     }
 }
