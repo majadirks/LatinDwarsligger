@@ -23,9 +23,9 @@ namespace LatinDwarsliggerLogic
 	///   - Similarly, if the font size allows two columns of dactylic hexameter
     ///   - to fit on a HalfSide, make it so.
     /// </summary>
-    public class ChunkArranger
+    public class Arranger
     {
-        public ChunkArranger(Graphics graphics, Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
+        public Arranger(Graphics graphics, Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
         {
             this.graphics = graphics;
             this.font = font;
