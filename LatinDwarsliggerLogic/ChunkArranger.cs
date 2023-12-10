@@ -32,19 +32,29 @@ namespace LatinDwarsliggerLogic
             PageDoubleHeightInches = pageDoubleHeightInches;
             PageWidthInches = pageWidthInches;
             LeftRightMarginInches = leftRightMarginInches;
-            TopBottomMarginInches = topBottomMarginInches;
+            TopBottomMarginInches = topBottomMarginInches;         
         }
 
         private Font font;
         private Graphics graphics;
         public decimal PageDoubleHeightInches { get; init; }
+        public decimal HalfSideHeightInches => (PageDoubleHeightInches / 2) - (TopBottomMarginInches * 2);
         public decimal PageWidthInches { get; init; }
         public decimal LeftRightMarginInches { get; init; }
         public decimal TopBottomMarginInches { get; init; }
 
         public IEnumerable<PaperSheet> ArrangeChunks(IEnumerable<ChunkOfText> chunks)
         {
-            throw new NotImplementedException();
+            // Figure out what will fit in column A1.
+            // Then figure out what will go in "the next column".
+            // If the two columns can fit side-by-side, call both HalfPageA.
+            // Otherwise, add the first column to Half Page A
+            // and assign thesecond column to column B1.
+            // Proceed until we have filled up through D1 (or D2 if possible).
+
+            // Or: Find the first eight columns. Assign them to spots A1-D2 as possible.
+
+            // Then create a PaperSheet from A, B, C, and D.
         }
 
     }

@@ -7,61 +7,60 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LatinDwarsliggerLogic
+namespace LatinDwarsliggerLogic;
+
+public record ChunkSize(double WidthInInches, double HeightInInches);
+public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
 {
-
-    public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
+    private const float POINTS_PER_INCH = 72;  // Use float instead of int to avoid integer division
+    private readonly string[] lines;
+    public ChunkOfText(IEnumerable<string> lines)
     {
-        private readonly string[] lines;
-        public ChunkOfText(IEnumerable<string> lines)
-        {
-            this.lines = lines.ToArray();
-        }
-        public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)lines).GetEnumerator();
-        
-        IEnumerator IEnumerable.GetEnumerator() => lines.GetEnumerator(); 
-        public override string ToString() => string.Join(Environment.NewLine, lines);
+        this.lines = lines.ToArray();
+    }
+    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)lines).GetEnumerator();
+    
+    IEnumerator IEnumerable.GetEnumerator() => lines.GetEnumerator(); 
+    public override string ToString() => string.Join(Environment.NewLine, lines);
 
-        public bool Equals(ChunkOfText? other)
+    public bool Equals(ChunkOfText? other)
+    {
+        if (other == null) return false;
+        if (this.lines.Length != other.lines.Length) 
+            return false;
+        for (int i = 0; i < this.lines.Length; i++)
         {
-            if (other == null) return false;
-            if (this.lines.Length != other.lines.Length) 
+            string myLine = this.lines[i];
+            string otherLine = other.lines[i];
+            if (myLine != otherLine) 
                 return false;
-            for (int i = 0; i < this.lines.Length; i++)
-            {
-                string myLine = this.lines[i];
-                string otherLine = other.lines[i];
-                if (myLine != otherLine) 
-                    return false;
-            }
-            return true;
         }
+        return true;
+    }
 
-        public override bool Equals(object? obj) 
-            => obj != null && obj is ChunkOfText other && Equals(other);
+    public override bool Equals(object? obj) 
+        => obj != null && obj is ChunkOfText other && Equals(other);
 
-        public override int GetHashCode()
+    public override int GetHashCode()
+    {
+        int hashCode = 39;
+        unchecked
         {
-            int hashCode = 39;
-            unchecked
+            for (int i = 0; i < lines.Length; i++)
             {
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    hashCode = hashCode + 17 * lines[i].GetHashCode();
-                }
+                hashCode = hashCode + 17 * lines[i].GetHashCode();
             }
-            return hashCode;
         }
+        return hashCode;
+    }
 
 #pragma warning disable CA1416 // Validate platform compatibility
-        public (float width, float height) GetSize(Graphics graphics, Font font)
-        {
-            IEnumerable<SizeF> widths = lines.Select(line => graphics.MeasureString(line, font, line.Length, StringFormat.GenericTypographic));
-            float maxWidth = widths.Select(w => w.Width).Max();
-                float height = widths.Select(w => w.Height).Sum();
-                return (maxWidth, height);
-        }
+    public ChunkSize GetSize(Font font)
+    {
+        float width = lines.Select(line => line.Length * font.SizeInPoints / POINTS_PER_INCH).Max();
+        float height = lines.Length * font.SizeInPoints / POINTS_PER_INCH;
+        return new(WidthInInches: width, HeightInInches: height);
+    }
 #pragma warning restore CA1416 // Validate platform compatibility
 
-    }
 }
