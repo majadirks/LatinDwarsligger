@@ -4,10 +4,10 @@ using System.Drawing;
 namespace LatinDwarsliggerLogic;
 
 public record ChunkSize(double WidthInInches, double HeightInInches);
-public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
+public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
 {
     private readonly string[] lines;
-    public ChunkOfText(IEnumerable<string> lines)
+    public Paragraph(IEnumerable<string> lines)
     {
         this.lines = lines.ToArray();
     }
@@ -16,7 +16,7 @@ public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
     IEnumerator IEnumerable.GetEnumerator() => lines.GetEnumerator(); 
     public override string ToString() => string.Join(Environment.NewLine, lines);
 
-    public bool Equals(ChunkOfText? other)
+    public bool Equals(Paragraph? other)
     {
         if (other == null) return false;
         if (this.lines.Length != other.lines.Length) 
@@ -32,7 +32,7 @@ public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
     }
 
     public override bool Equals(object? obj) 
-        => obj != null && obj is ChunkOfText other && Equals(other);
+        => obj != null && obj is Paragraph other && Equals(other);
 
     public override int GetHashCode()
     {

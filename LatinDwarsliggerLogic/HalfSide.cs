@@ -22,15 +22,15 @@ public class HalfSide
 
 public class Column : IEnumerable<string>
 {
-    public IEnumerable<string> Contents { get; init; }
+    public List<string> Contents { get; init; }
     private readonly Font font;
     public float Width => Contents.Width(font);
     public float Height => Contents.Height(font);
     public decimal LeftRightMarginInches { get; init; }
     public decimal TopBottomMarginInches { get; init; }
-    public Column(IEnumerable<string> contents, Font font, decimal leftRightMarginInches, decimal topBottomMarginInches)
+    public Column(Font font, decimal leftRightMarginInches, decimal topBottomMarginInches)
     {
-        this.Contents = contents.ToList();
+        this.Contents = [];
         this.font = font;
         this.TopBottomMarginInches = topBottomMarginInches;
         this.LeftRightMarginInches = leftRightMarginInches;

@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<DontCare>", Scope = "member", Target = "~M:LatinDwarsliggerLogic.ChunkOfText.GetSize(System.Drawing.Font)~System.ValueTuple{System.Single,System.Single}")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<DontCare>", Scope = "member", Target = "~M:LatinDwarsliggerLogic.Paragraph.GetSize(System.Drawing.Font)~System.ValueTuple{System.Single,System.Single}")]

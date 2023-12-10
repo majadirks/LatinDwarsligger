@@ -229,7 +229,7 @@ impulerit. Tantaene animīs caelestibus īrae?
 
 </body></html>";
             string[] rawHtmlLines = rawHtml.Split(Environment.NewLine);
-            ChunkOfText[] expected =
+            Paragraph[] expected =
                 [
                     new(["Arma virumque canō, Trōiae quī prīmus ab ōrīs",
                     "Ītaliam, fātō profugus, Lāvīniaque vēnit",
@@ -251,8 +251,8 @@ impulerit. Tantaene animīs caelestibus īrae?
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
             {
-                ChunkOfText expectedCot = expected[i];
-                ChunkOfText actualCot = actual[i];
+                Paragraph expectedCot = expected[i];
+                Paragraph actualCot = actual[i];
                 Assert.AreEqual(expectedCot, actualCot);
             }
         }
