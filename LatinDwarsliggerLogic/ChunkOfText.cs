@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LatinDwarsliggerLogic;
 
 public record ChunkSize(double WidthInInches, double HeightInInches);
 public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
 {
-    private const float POINTS_PER_INCH = 72;  // Use float instead of int to avoid integer division
     private readonly string[] lines;
     public ChunkOfText(IEnumerable<string> lines)
     {
@@ -54,13 +47,11 @@ public class ChunkOfText : IEnumerable<string>, IEquatable<ChunkOfText>
         return hashCode;
     }
 
-#pragma warning disable CA1416 // Validate platform compatibility
     public ChunkSize GetSize(Font font)
     {
-        float width = lines.Select(line => line.Length * font.SizeInPoints / POINTS_PER_INCH).Max();
-        float height = lines.Length * font.SizeInPoints / POINTS_PER_INCH;
+        float width = lines.Width(font);
+        float height = lines.Height(font);
         return new(WidthInInches: width, HeightInInches: height);
     }
-#pragma warning restore CA1416 // Validate platform compatibility
 
 }

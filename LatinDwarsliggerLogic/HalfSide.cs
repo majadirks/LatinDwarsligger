@@ -1,11 +1,18 @@
 ﻿using System.Collections;
+using System.Drawing;
 
 namespace LatinDwarsliggerLogic;
 public class HalfSide
 {
-    private readonly Column leftColumn;
-    private readonly Column? rightColumn;
+    public Column leftColumn { get; init; }
+    public Column? rightColumn { get; init; }
     public int ColumnCount => rightColumn == null ? 2 : 1;
+    public decimal LeftRightMarginInches { get; init; }
+    public decimal TopBottomMarginInches { get; init; }
+    public float Width =>
+        rightColumn == null ?
+        leftColumn.Width + Convert.ToSingle(2 * LeftRightMarginInches) :
+        leftColumn.Width + rightColumn.Width + Convert.ToSingle(3 * LeftRightMarginInches); // extra margin in the middle
     public HalfSide(Column leftColumn, Column? rightColumn = null)
     {
         this.leftColumn = leftColumn;
@@ -16,9 +23,17 @@ public class HalfSide
 public class Column : IEnumerable<string>
 {
     public IEnumerable<string> Contents { get; init; }
-    public Column(IEnumerable<string> contents)
+    private readonly Font font;
+    public float Width => Contents.Width(font);
+    public float Height => Contents.Height(font);
+    public decimal LeftRightMarginInches { get; init; }
+    public decimal TopBottomMarginInches { get; init; }
+    public Column(IEnumerable<string> contents, Font font, decimal leftRightMarginInches, decimal topBottomMarginInches)
     {
         this.Contents = contents.ToList();
+        this.font = font;
+        this.TopBottomMarginInches = topBottomMarginInches;
+        this.LeftRightMarginInches = leftRightMarginInches;
     }
     public IEnumerator<string> GetEnumerator() => Contents.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Contents).GetEnumerator();
