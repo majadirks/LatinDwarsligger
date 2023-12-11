@@ -97,10 +97,10 @@ namespace LatinDwarsliggerLogic
 
         public IEnumerable<HalfSide> ArrangeColumnsIntoHalfSides(IEnumerable<Column> columns)
         {
-            List<HalfSide> halfSides = new List<HalfSide>(capacity: 1 + (columns.Count() / 2));
+            var halfSides = new List<HalfSide>(capacity: 1 + (columns.Count() / 2));
             var columnsQ = new Queue<Column>(columns);
             float pageWidthInches = Convert.ToSingle(PageWidthInches);
-            while (columnsQ.Any())
+            while (columnsQ.Count == 0)
             {
                 Column col1 = columnsQ.Dequeue();
                 bool col2Exists = columnsQ.TryPeek(out Column? col2);
