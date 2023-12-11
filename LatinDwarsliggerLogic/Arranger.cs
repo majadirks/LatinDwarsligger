@@ -80,7 +80,7 @@ namespace LatinDwarsliggerLogic
             {
                 // In new column, skip any opening breaks
                 string line = lines[i];
-                while (string.IsNullOrWhiteSpace(line))
+                while (string.IsNullOrWhiteSpace(line) && i < lines.Length)
                 {
                     i++;
                     line = lines[i];
