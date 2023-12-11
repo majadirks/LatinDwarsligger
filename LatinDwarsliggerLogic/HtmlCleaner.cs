@@ -10,10 +10,10 @@ namespace LatinDwarsliggerLogic
     /// </summary>
     public static class HtmlCleaner
     {
-        public static IEnumerable<ChunkOfText> FormatHtmlFile(string path)
+        public static IEnumerable<Paragraph> FormatHtmlFile(string path)
             => File.ReadAllLines(path).FormatHtmlCode();
         
-        public static IEnumerable<ChunkOfText> FormatHtmlCode(this string[] lines)
+        public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
@@ -118,7 +118,8 @@ namespace LatinDwarsliggerLogic
         {
             var x = string.
                 Join(" ", text)
-                .Split("<br>");
+                .Split("<br>")
+                .SelectMany(str => str.Split("</br>"));
             var y = x
                 .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()
@@ -158,10 +159,10 @@ namespace LatinDwarsliggerLogic
             return text.Select(line => line.Replace("<div>", ""));
         }
 
-        public static IEnumerable<ChunkOfText> ParseTextIntoChunks(this IEnumerable<string> lines)
+        public static IEnumerable<Paragraph> ParseTextIntoChunks(this IEnumerable<string> lines)
         {
             string[] lineArray = lines.ToArray();
-            var chunks = new List<ChunkOfText>();
+            var chunks = new List<Paragraph>();
             for(int i = 0; i < lineArray.Length; i++)
             {
                 string line = lineArray[i];
