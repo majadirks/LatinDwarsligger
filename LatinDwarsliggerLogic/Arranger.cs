@@ -101,7 +101,7 @@ namespace LatinDwarsliggerLogic
             var halfSides = new List<HalfSide>(capacity: 1 + (columns.Count() / 2));
             var columnsQ = new Queue<Column>(columns);
             float pageWidthInches = Convert.ToSingle(PageWidthInches);
-            while (columnsQ.Count >= 0)
+            while (columnsQ.Count > 0)
             {
                 Column col1 = columnsQ.Dequeue();
                 bool col2Exists = columnsQ.TryPeek(out Column? col2);
@@ -134,7 +134,7 @@ namespace LatinDwarsliggerLogic
                 var sideA = sidesQ.Dequeue(); // side A
                 sidesOnSheet[0] = sideA;
                 Debug.Assert(sideA != null);
-                for (int i = 1; i < 3 && sidesQ.TryPeek(out HalfSide? next); i++)
+                for (int i = 1; i <= 3 && sidesQ.TryDequeue(out HalfSide? next); i++)
                 {
                     sidesOnSheet[i] = next; // sides B, C, and D, if they exist
                 }
