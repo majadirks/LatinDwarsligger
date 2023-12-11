@@ -13,19 +13,36 @@ namespace LatinDwarsliggerTest;
 public class Arranger_Tests
 {
     [TestMethod]
-    public void ArrangeAeneid()
+    public void ArrangeAeneidColumnsIntoParagraphs()
     {
+        // ToDo: Add assertions, make text more explicit in code rather than reading from file
+
         // Arrange
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
 
-        Graphics g = Graphics.FromHwnd(IntPtr.Zero);
-
         Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
-        Arranger arr = new(g, font, 8.5m, 8.5m, 0.2m, 0.2m);
+        Arranger arr = new(font, 8.5m, 8.5m, 0.2m, 0.2m);
 
         // Act
-        var actual = arr.ArrangeIntoColumns(paragraphs);
+        var actual = arr.ArrangeParagraphsIntoColumns(paragraphs);
+    }
+
+    [TestMethod]
+    public void ArrangeAeneidParagraphsIntoHalfSides()
+    {
+        // ToDo: Make columns explicit (not read from file),
+        // add assertions
+
+        // Arrange
+        string path = "resources/aen1.html";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
+        Arranger arr = new(font, 8.5m, 8.5m, 0.2m, 0.2m);
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+
+        // Act
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
     }
 
 }

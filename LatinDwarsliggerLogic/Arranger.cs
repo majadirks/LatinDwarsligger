@@ -25,9 +25,8 @@ namespace LatinDwarsliggerLogic
     /// </summary>
     public class Arranger
     {
-        public Arranger(Graphics graphics, Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
+        public Arranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
         {
-            this.graphics = graphics;
             this.font = font;
             PageDoubleHeightInches = pageDoubleHeightInches;
             PageWidthInches = pageWidthInches;
@@ -36,14 +35,13 @@ namespace LatinDwarsliggerLogic
         }
 
         private Font font;
-        private Graphics graphics;
         public decimal PageDoubleHeightInches { get; init; }
         public decimal HalfSideHeightInches => (PageDoubleHeightInches / 2) - (TopBottomMarginInches * 2);
         public decimal PageWidthInches { get; init; }
         public decimal LeftRightMarginInches { get; init; }
         public decimal TopBottomMarginInches { get; init; }
 
-        public IEnumerable<Column> ArrangeIntoColumns(IEnumerable<Paragraph> paragraphs)
+        public IEnumerable<Column> ArrangeParagraphsIntoColumns(IEnumerable<Paragraph> paragraphs)
         {
             var columns = new List<Column>();
             // Figure out what will fit in column A1.
@@ -97,5 +95,11 @@ namespace LatinDwarsliggerLogic
             return columns;
         }
 
+        public IEnumerable<HalfSide> ArrangeColumnsIntoHalfSides(IEnumerable<Column> columns)
+        {
+            var columnsQ = new Queue<Column>(columns);
+            
+            throw new NotImplementedException();
+        }
     }
 }
