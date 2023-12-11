@@ -18,6 +18,16 @@ public class HalfSide
         this.leftColumn = leftColumn;
         this.rightColumn = rightColumn;
     }
+
+    public override string ToString()
+    {
+        if (rightColumn == null)
+            return string.Join(Environment.NewLine, leftColumn);
+
+        var zipped = leftColumn.Zip(rightColumn, resultSelector: (str1, str2) => $"{str1 ?? ""}\t| {str2 ?? ""}");
+        return string.Join(Environment.NewLine, zipped);
+
+    }
 }
 
 public class Column : IEnumerable<string>
@@ -37,5 +47,6 @@ public class Column : IEnumerable<string>
     }
     public IEnumerator<string> GetEnumerator() => Contents.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Contents).GetEnumerator();
+    public override string ToString() => string.Join(Environment.NewLine, Contents);
     
 }

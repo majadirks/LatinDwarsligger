@@ -56,7 +56,17 @@ namespace LatinDwarsliggerLogic
 
             // Then create a PaperSheet from A, B, C, and D.
 
-            Column colA = new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches);
+            Column[] cols =
+                [
+                new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
+                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches)
+                    ];
             float halfSideHeightInches = Convert.ToSingle(HalfSideHeightInches);
 
             string[] lines = paragraphs
@@ -64,13 +74,40 @@ namespace LatinDwarsliggerLogic
                 .SkipLast(1) // ignore paragraph break
                 .ToArray();
 
-            for (int i = 0;  colA.Height < halfSideHeightInches; i++)
+            int i = 0;
+            for (int col = 0; col < cols.Length && i < lines.Length; col++)
             {
+                // In new column, skip any opening breaks
                 string line = lines[i];
-                colA.Contents.Add(line);
+                while (string.IsNullOrWhiteSpace(line))
+                {
+                    i++;
+                    line = lines[i];
+                }
+
+                // Add lines until the next line would push the column above the max height
+                for (; cols[col].Height < halfSideHeightInches && i < lines.Length; i++)
+                {
+                    line = lines[i];
+                    if (cols[col].Height + Utils.LineHeight(font) < halfSideHeightInches)
+                        cols[col].Contents.Add(line);
+                    else
+                        break;
+                }
+
+                // Todo: If we finished a potential "right" column,
+                // check whether it would fit
+                if (col % 2 == 1)
+                {
+                    // ToDo
+                }
+
+                ;
+
             }
 
-            HalfSide dummy = new HalfSide(colA);
+
+            HalfSide dummy = new HalfSide(cols[0]);
             PaperSheet dummySheet = new(dummy, dummy, dummy, dummy);
             ;
             throw new NotImplementedException();

@@ -15,6 +15,8 @@ public static class Utils
         => lines.Select(line => line.Length * font.SizeInPoints / POINTS_PER_INCH).Max();
     public static float Height(this IEnumerable<string> lines, Font font)
         => lines.Count() * font.SizeInPoints / POINTS_PER_INCH;
+    public static float LineHeight(Font font) 
+        => font.SizeInPoints / POINTS_PER_INCH;
 
 }
 #pragma warning restore CA1416 // Validate platform compatibility

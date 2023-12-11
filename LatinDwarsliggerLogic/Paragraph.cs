@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace LatinDwarsliggerLogic;
 
-public record ChunkSize(double WidthInInches, double HeightInInches);
+public record ParagraphSize(double WidthInInches, double HeightInInches);
 public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
 {
     public string[] Lines { get; init; }
@@ -47,7 +47,7 @@ public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
         return hashCode;
     }
 
-    public ChunkSize GetSize(Font font)
+    public ParagraphSize GetSize(Font font)
     {
         float width = Lines.Width(font);
         float height = Lines.Height(font);
