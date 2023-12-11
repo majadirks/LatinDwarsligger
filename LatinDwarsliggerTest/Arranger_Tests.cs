@@ -38,7 +38,7 @@ public class Arranger_Tests
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
         Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
-        Arranger arr = new(font, 8.5m, 8.5m, 0.2m, 0.2m);
+        Arranger arr = new(font, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
         var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
 
         // Act
