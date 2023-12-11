@@ -43,7 +43,7 @@ namespace LatinDwarsliggerLogic
         public decimal LeftRightMarginInches { get; init; }
         public decimal TopBottomMarginInches { get; init; }
 
-        public IEnumerable<Column> Arrange(IEnumerable<Paragraph> paragraphs)
+        public IEnumerable<Column> ArrangeIntoColumns(IEnumerable<Paragraph> paragraphs)
         {
             var columns = new List<Column>();
             // Figure out what will fit in column A1.

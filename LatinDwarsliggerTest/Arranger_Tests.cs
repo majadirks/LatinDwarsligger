@@ -25,7 +25,7 @@ public class Arranger_Tests
         Arranger arr = new(g, font, 8.5m, 8.5m, 0.2m, 0.2m);
 
         // Act
-        var actual = arr.Arrange(paragraphs);
+        var actual = arr.ArrangeIntoColumns(paragraphs);
     }
 
 }
