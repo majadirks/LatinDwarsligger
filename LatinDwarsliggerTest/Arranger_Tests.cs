@@ -45,5 +45,23 @@ public class Arranger_Tests
         var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
     }
 
+    [TestMethod]
+    public void ArrangeAeneidHalfSidesIntoPages()
+    {
+        // ToDo: Make half sides explicit (not read from file),
+        // add assertions
+
+        // Arrange
+        string path = "resources/aen1.html";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
+        Arranger arr = new(font, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+
+        // Act
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
+    }
+
 }
 #pragma warning restore CA1416 // Validate platform compatibility

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace LatinDwarsliggerLogic
 {
@@ -100,7 +101,7 @@ namespace LatinDwarsliggerLogic
             var halfSides = new List<HalfSide>(capacity: 1 + (columns.Count() / 2));
             var columnsQ = new Queue<Column>(columns);
             float pageWidthInches = Convert.ToSingle(PageWidthInches);
-            while (columnsQ.Count == 0)
+            while (columnsQ.Count > 0)
             {
                 Column col1 = columnsQ.Dequeue();
                 bool col2Exists = columnsQ.TryPeek(out Column? col2);
@@ -121,6 +122,26 @@ namespace LatinDwarsliggerLogic
                 
             }
             return halfSides;
+        }
+
+        public IEnumerable<PaperSheet> ArrangeHalfSidesIntoPaperSheets(IEnumerable<HalfSide> halfSides)
+        {
+            var paperSheets = new List<PaperSheet>();
+            var sidesQ = new Queue<HalfSide>(halfSides);
+            while (sidesQ.Count > 0)
+            {
+                HalfSide?[] sidesOnSheet = new HalfSide?[4];
+                var sideA = sidesQ.Dequeue(); // side A
+                sidesOnSheet[0] = sideA;
+                Debug.Assert(sideA != null);
+                for (int i = 1; i <= 3 && sidesQ.TryDequeue(out HalfSide? next); i++)
+                {
+                    sidesOnSheet[i] = next; // sides B, C, and D, if they exist
+                }
+                var nextSheet = new PaperSheet(sideA, sidesOnSheet[1], sidesOnSheet[2], sidesOnSheet[3]);
+                paperSheets.Add(nextSheet);
+            }
+            return paperSheets;
         }
     }
 }
