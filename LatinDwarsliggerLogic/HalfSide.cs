@@ -32,7 +32,7 @@ public class HalfSide
 
 public class Column : IEnumerable<string>
 {
-    public List<string> Contents { get; init; }
+    public List<string> Contents { get; private set; }
     private readonly Font font;
     public float Width => Contents.Width(font);
     public float Height => Contents.Height(font);
@@ -48,5 +48,6 @@ public class Column : IEnumerable<string>
     public IEnumerator<string> GetEnumerator() => Contents.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Contents).GetEnumerator();
     public override string ToString() => string.Join(Environment.NewLine, Contents);
+    public void RemoveFinalTwoLines() => Contents = Contents.SkipLast(2).ToList();
     
 }

@@ -43,8 +43,9 @@ namespace LatinDwarsliggerLogic
         public decimal LeftRightMarginInches { get; init; }
         public decimal TopBottomMarginInches { get; init; }
 
-        public IEnumerable<PaperSheet> Arrange(IEnumerable<Paragraph> paragraphs)
+        public IEnumerable<Column> Arrange(IEnumerable<Paragraph> paragraphs)
         {
+            var columns = new List<Column>();
             // Figure out what will fit in column A1.
             // Then figure out what will go in "the next column".
             // If the two columns can fit side-by-side, call both HalfPageA.
@@ -54,19 +55,7 @@ namespace LatinDwarsliggerLogic
 
             // Or: Find the first eight columns. Assign them to spots A1-D2 as possible.
 
-            // Then create a PaperSheet from A, B, C, and D.
 
-            Column[] cols =
-                [
-                new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches),
-                    new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches)
-                    ];
             float halfSideHeightInches = Convert.ToSingle(HalfSideHeightInches);
             float lineHeight = Utils.LineHeight(font);
 
@@ -76,8 +65,9 @@ namespace LatinDwarsliggerLogic
                 .ToArray();
 
             int i = 0;
-            for (int col = 0; col < cols.Length && i < lines.Length; col++)
+            for (int colIdx = 0; i < lines.Length; colIdx++)
             {
+                Column col = new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches);
                 // In new column, skip any opening breaks
                 string line = lines[i];
                 while (string.IsNullOrWhiteSpace(line) && i < lines.Length)
@@ -86,29 +76,25 @@ namespace LatinDwarsliggerLogic
                     line = lines[i];
                 }
 
+                
+
                 // Add lines until the next line would push the column above the max height
-                for (; cols[col].Height + lineHeight < halfSideHeightInches && i < lines.Length; i++)
+                for (; col.Height + lineHeight < halfSideHeightInches && i < lines.Length; i++)
                 {
                     line = lines[i];
-                    cols[col].Contents.Add(line);
+                    col.Contents.Add(line);
                 }
 
-                // Todo: If we finished a potential "right" column,
-                // check whether it would fit
-                if (col % 2 == 1)
+                // If final two lines are a break and a line, move the line to the next column
+                if (string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
                 {
-                    // ToDo
+                    i--;
+                    col.RemoveFinalTwoLines();
                 }
 
-                ;
-
+                columns.Add(col);
             }
-
-
-            HalfSide dummy = new HalfSide(cols[0]);
-            PaperSheet dummySheet = new(dummy, dummy, dummy, dummy);
-            ;
-            throw new NotImplementedException();
+            return columns;
         }
 
     }
