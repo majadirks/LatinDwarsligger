@@ -68,6 +68,7 @@ namespace LatinDwarsliggerLogic
                     new(font: font, leftRightMarginInches: LeftRightMarginInches, topBottomMarginInches: TopBottomMarginInches)
                     ];
             float halfSideHeightInches = Convert.ToSingle(HalfSideHeightInches);
+            float lineHeight = Utils.LineHeight(font);
 
             string[] lines = paragraphs
                 .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
@@ -86,13 +87,10 @@ namespace LatinDwarsliggerLogic
                 }
 
                 // Add lines until the next line would push the column above the max height
-                for (; cols[col].Height < halfSideHeightInches && i < lines.Length; i++)
+                for (; cols[col].Height + lineHeight < halfSideHeightInches && i < lines.Length; i++)
                 {
                     line = lines[i];
-                    if (cols[col].Height + Utils.LineHeight(font) < halfSideHeightInches)
-                        cols[col].Contents.Add(line);
-                    else
-                        break;
+                    cols[col].Contents.Add(line);
                 }
 
                 // Todo: If we finished a potential "right" column,
