@@ -30,8 +30,8 @@ public class Column : IEnumerable<string>
     {
         string? longestLine = Contents.MaxBy(line => line.Length);
         Debug.Assert(longestLine != null);
-        SizeF stringSize = graphics.MeasureString(longestLine, font, int.MaxValue, stringFormat);
-        return stringSize.Width / pixelsPerInch; // Maybe?     
+        SizeF stringSize = graphics.MeasureString(text: longestLine, font: font);
+        return stringSize.Width / pixelsPerInch; // Maybe? I expect a line of dactylic hex. to be >1000 pixels, or 3.5 inches
     }
     public float Height()
     {
