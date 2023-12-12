@@ -6,17 +6,17 @@ namespace LatinDwarsliggerLogic;
 #pragma warning disable CA1416 // Validate platform compatibility
 public class Column : IEnumerable<string>
 {
-    private const int PIXELS_PER_INCH = 320;
-
-    public Column(Font font, decimal maxHeightInches, decimal maxWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
+    public Column(Font font, decimal maxHeightInches, decimal maxWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch)
     {
         this.Contents = [];
         this.font = font;
         this.TopBottomMarginInches = topBottomMarginInches;
         this.LeftRightMarginInches = leftRightMarginInches;
-        this.bitmap = new(width: Convert.ToInt32(maxWidthInches * PIXELS_PER_INCH), height: Convert.ToInt32(maxHeightInches * PIXELS_PER_INCH));
+        this.pixelsPerInch = pixelsPerInch;
+        this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
         this.graphics = Graphics.FromImage(bitmap);
         this.stringFormat = new();
+        
     }
 
     public List<string> Contents { get; private set; }
@@ -24,13 +24,14 @@ public class Column : IEnumerable<string>
     private readonly Graphics graphics;
     private readonly Font font;
     private readonly StringFormat stringFormat;
+    private readonly int pixelsPerInch;
     
     public float Width()
     {
         string? longestLine = Contents.MaxBy(line => line.Length);
         Debug.Assert(longestLine != null);
         SizeF stringSize = graphics.MeasureString(longestLine, font, int.MaxValue, stringFormat);
-        return stringSize.Width / PIXELS_PER_INCH; // Maybe?     
+        return stringSize.Width / pixelsPerInch; // Maybe?     
     }
     public float Height()
     {

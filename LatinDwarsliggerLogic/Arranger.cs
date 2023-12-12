@@ -27,13 +27,14 @@ namespace LatinDwarsliggerLogic;
 /// </summary>
 public class Arranger
 {
-    public Arranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches)
+    public Arranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch = 320)
     {
         this.font = font;
         PageDoubleHeightInches = pageDoubleHeightInches;
         PageWidthInches = pageWidthInches;
         LeftRightMarginInches = leftRightMarginInches;
-        TopBottomMarginInches = topBottomMarginInches;         
+        TopBottomMarginInches = topBottomMarginInches;      
+        PixelsPerInch = pixelsPerInch;
     }
 
     private Font font;
@@ -42,6 +43,7 @@ public class Arranger
     public decimal PageWidthInches { get; init; }
     public decimal LeftRightMarginInches { get; init; }
     public decimal TopBottomMarginInches { get; init; }
+    public int PixelsPerInch { get; init; }
 
     public IEnumerable<Column> ArrangeParagraphsIntoColumns(IEnumerable<Paragraph> paragraphs)
     {
@@ -72,7 +74,8 @@ public class Arranger
                 leftRightMarginInches: LeftRightMarginInches,
                 topBottomMarginInches: TopBottomMarginInches, 
                 maxHeightInches: HalfSideHeightInches, 
-                maxWidthInches: PageWidthInches);
+                maxWidthInches: PageWidthInches,
+                pixelsPerInch: PixelsPerInch);
             // In new column, skip any opening breaks
             string line = lines[i];
             while (string.IsNullOrWhiteSpace(line) && i < lines.Length)
