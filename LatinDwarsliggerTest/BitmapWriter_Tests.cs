@@ -26,7 +26,7 @@ public class BitmapWriter_Tests
         // Act
         foreach (var column in columns)
         {
-            BitmapWriter.FromColumn(column);
+            column.ToBitmap();
         }
 
     }

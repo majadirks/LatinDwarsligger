@@ -4,11 +4,11 @@ using System.Drawing.Text;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
-public class BitmapWriter
+public static class BitmapWriter
 {
 
     // https://stackoverflow.com/questions/63704594/render-very-high-quality-text-to-bitmap
-    public static Bitmap FromColumn(Column column)
+    public static Bitmap ToBitmap(this Column column)
     {
         Font font = column.Font;
         int pixelsPerInch = column.PixelsPerInch;
