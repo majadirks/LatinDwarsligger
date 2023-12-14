@@ -10,8 +10,8 @@ namespace LatinDwarsliggerLogic;
 public class BitmapWriter
 {
     // https://stackoverflow.com/questions/63704594/render-very-high-quality-text-to-bitmap
-    //public static Bitmap ConvertTextToImage(string text, Font font)
-    //{
+    public static Bitmap FromColumn(string text, Font font)
+    {
         //Bitmap bitmap = new(1, 1);
         //Graphics graphics = Graphics.FromImage(bitmap);
         //StringFormat stringFormat = new();
@@ -36,5 +36,5 @@ public class BitmapWriter
         //
         //graphics.DrawString(text, font, new SolidBrush(foregroundColor), x, 0, stringFormat);
         //return bitmap;
-    //}
+    }
 }
