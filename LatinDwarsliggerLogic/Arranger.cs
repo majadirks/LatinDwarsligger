@@ -130,9 +130,12 @@ public class Arranger
                 }
                 else
                 {
-                    var JustCol1 = new HalfSide(col1);
-                    halfSides.Add(JustCol1);
+                    halfSides.Add(new(col1));
                 }
+            }
+            else // no second column remains
+            {
+                halfSides.Add(new(col1));
             }
             
         }
