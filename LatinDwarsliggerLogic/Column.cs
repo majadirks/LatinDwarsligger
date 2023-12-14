@@ -31,10 +31,9 @@ public sealed class Column : IEnumerable<string>, IDisposable
     
     public float WidthInInches()
     {
-        string? longestLine = Contents.MaxBy(line => line.Length);
-        Debug.Assert(longestLine != null);
-        SizeF stringSize = graphics.MeasureString(text: longestLine, font: Font);
-        return stringSize.Width; // I expect a line of dactylic hexameter in 11pt font to be >1000 pixels, or 3.5 inches 
+        IEnumerable<float> widths = Contents.Select(line => graphics.MeasureString(text: line, font: Font).Width);
+        float maxWidth = widths.Max(); // I expect a line of dactylic hexameter in 11pt font to be >1000 pixels, or 3.5 inches
+        return maxWidth; 
     }
     public float HeightInInches()
     {
