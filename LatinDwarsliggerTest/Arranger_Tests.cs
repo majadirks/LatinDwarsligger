@@ -13,7 +13,7 @@ namespace LatinDwarsliggerTest;
 public class Arranger_Tests
 {
     [TestMethod]
-    public void ArrangeAeneidColumnsIntoParagraphs()
+    public void ArrangeAeneidParagraphsIntoColumns()
     {
         // ToDo: Add assertions, make text more explicit in code rather than reading from file
 
@@ -21,7 +21,7 @@ public class Arranger_Tests
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
 
-        Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
+        Font font = new Font(FontFamily.GenericSerif, emSize: 0.3f, FontStyle.Regular, GraphicsUnit.Inch);
         Arranger arr = new(font, 8.5m, 8.5m, 0.2m, 0.2m);
 
         // Act
@@ -29,7 +29,7 @@ public class Arranger_Tests
     }
 
     [TestMethod]
-    public void ArrangeAeneidParagraphsIntoHalfSides()
+    public void ArrangeAeneidColumnsIntoHalfSides()
     {
         // ToDo: Make columns explicit (not read from file),
         // add assertions
@@ -37,7 +37,7 @@ public class Arranger_Tests
         // Arrange
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
-        Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
+        Font font = new Font("Arial", emSize: 0.3f, FontStyle.Regular, GraphicsUnit.Inch);
         Arranger arr = new(font, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
         var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
 
@@ -54,7 +54,7 @@ public class Arranger_Tests
         // Arrange
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
-        Font font = new Font(FontFamily.GenericSerif, emSize: 11, FontStyle.Regular, GraphicsUnit.Point);
+        Font font = new Font("Times New Roman", emSize: 0.3f, FontStyle.Regular, GraphicsUnit.Inch);
         Arranger arr = new(font, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
         var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
         var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);

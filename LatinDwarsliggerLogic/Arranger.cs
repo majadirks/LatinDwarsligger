@@ -59,7 +59,7 @@ public class Arranger
 
 
         float halfSideHeightInches = Convert.ToSingle(HalfSideHeightInches);
-        float lineHeight = font.SizeInPoints / Constants.PICA_POINTS_PER_INCH;
+        float lineHeight = font.Size;
 
         string[] lines = paragraphs
             .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
@@ -94,7 +94,7 @@ public class Arranger
             }
 
             // If final two lines are a break and a line, move the line to the next column
-            if (string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
+            if (col.Contents.Count > 0 && string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
             {
                 i--;
                 col.RemoveFinalTwoLines();

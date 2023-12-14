@@ -15,6 +15,7 @@ public class Column : IEnumerable<string>
         this.pixelsPerInch = pixelsPerInch;
         this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
         this.graphics = Graphics.FromImage(bitmap);
+        graphics.PageUnit = GraphicsUnit.Inch;
         this.stringFormat = new();
         
     }
@@ -31,11 +32,11 @@ public class Column : IEnumerable<string>
         string? longestLine = Contents.MaxBy(line => line.Length);
         Debug.Assert(longestLine != null);
         SizeF stringSize = graphics.MeasureString(text: longestLine, font: font);
-        return stringSize.Width / pixelsPerInch; // Maybe? I expect a line of dactylic hex. to be >1000 pixels, or 3.5 inches
+        return stringSize.Width; // Maybe? I expect a line of dactylic hex. to be >1000 pixels, or 3.5 inches
     }
     public float Height()
     {
-        return Contents.Count * font.SizeInPoints / Constants.PICA_POINTS_PER_INCH;
+        return Contents.Count * font.Size;
     }
     public decimal LeftRightMarginInches { get; init; }
     public decimal TopBottomMarginInches { get; init; }
