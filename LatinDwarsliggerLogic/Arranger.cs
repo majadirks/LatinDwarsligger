@@ -37,7 +37,7 @@ public class Arranger
         PixelsPerInch = pixelsPerInch;
     }
 
-    private Font font;
+    private readonly Font font;
     public decimal PageDoubleHeightInches { get; init; }
     public decimal HalfSideHeightInches => (PageDoubleHeightInches / 2) - (TopBottomMarginInches * 2);
     public decimal PageWidthInches { get; init; }

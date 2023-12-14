@@ -12,12 +12,10 @@ public class Column : IEnumerable<string>
         this.font = font;
         this.TopBottomMarginInches = topBottomMarginInches;
         this.LeftRightMarginInches = leftRightMarginInches;
-        this.pixelsPerInch = pixelsPerInch;
         this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
         this.graphics = Graphics.FromImage(bitmap);
         graphics.PageUnit = GraphicsUnit.Inch;
         this.stringFormat = new();
-        
     }
 
     public List<string> Contents { get; private set; }
@@ -25,7 +23,6 @@ public class Column : IEnumerable<string>
     private readonly Graphics graphics;
     private readonly Font font;
     private readonly StringFormat stringFormat;
-    private readonly int pixelsPerInch;
     
     public float Width()
     {
