@@ -20,7 +20,7 @@ public class BitmapWriter
         float padding = 0.2f * font.Size * PIXELS_PER_INCH;
 
         Bitmap bitmap = new(
-            width: Convert.ToInt32((PIXELS_PER_INCH * column.WidthInInches()) + 2 * padding) , 
+            width: Convert.ToInt32((PIXELS_PER_INCH * column.WidthInInches()) + 4 * padding) , 
             height: Convert.ToInt32((PIXELS_PER_INCH * column.HeightInInches()) + 2 * padding));
         bitmap.SetResolution(PIXELS_PER_INCH, PIXELS_PER_INCH);
         Graphics graphics = Graphics.FromImage(bitmap);

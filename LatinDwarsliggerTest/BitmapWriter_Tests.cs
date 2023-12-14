@@ -15,10 +15,13 @@ public class BitmapWriter_Tests
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
         Arranger arr = new(fontFamilyName: "Arial", emSizePoints: 11, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
-        var column = arr.ArrangeParagraphsIntoColumns(paragraphs).First();
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
 
         // Act
-        BitmapWriter.FromColumn(column);
+        foreach (var column in columns)
+        {
+            BitmapWriter.FromColumn(column);
+        }
 
     }
 }
