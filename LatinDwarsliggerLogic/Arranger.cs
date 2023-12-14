@@ -22,7 +22,7 @@ namespace LatinDwarsliggerLogic;
 public class Arranger
 {
     private const float TYPOGRAPHIC_POINTS_PER_INCH = 72;
-    public Arranger(String fontFamilyName, float emSizePoints, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch = 320)
+    public Arranger(String fontFamilyName, float emSizePoints, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch)
     {
         float emSizeInches = emSizePoints / TYPOGRAPHIC_POINTS_PER_INCH;
         this.font = new Font(familyName: fontFamilyName, emSize: emSizeInches, style: FontStyle.Regular, unit: GraphicsUnit.Inch);
