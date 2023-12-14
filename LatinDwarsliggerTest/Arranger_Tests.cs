@@ -54,7 +54,7 @@ public class Arranger_Tests
         // Arrange
         string path = "resources/aen1.html";
         var paragraphs = HtmlCleaner.FormatHtmlFile(path);
-        Font font = new Font("Times New Roman", emSize: 0.3f, FontStyle.Regular, GraphicsUnit.Inch);
+        Font font = new Font("Times New Roman", emSize: 12, FontStyle.Regular, GraphicsUnit.Point);
         Arranger arr = new(font, pageDoubleHeightInches: 8.5m, pageWidthInches: 8.5m, leftRightMarginInches: 0.2m, topBottomMarginInches: 0.2m);
         var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
         var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);

@@ -67,8 +67,10 @@ public class Arranger
             .ToArray();
 
         int i = 0;
+        bool lineAdded;
         for (int colIdx = 0; i < lines.Length; colIdx++)
         {
+            lineAdded = false;
             Column col = new(
                 font: font, 
                 leftRightMarginInches: LeftRightMarginInches,
@@ -91,7 +93,11 @@ public class Arranger
             {
                 line = lines[i];
                 col.Contents.Add(line);
+                lineAdded = true;
             }
+
+            if (!lineAdded)
+                throw new Exception($"Could not add line '{line}' to a column.");
 
             // If final two lines are a break and a line, move the line to the next column
             if (col.Contents.Count > 0 && string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
