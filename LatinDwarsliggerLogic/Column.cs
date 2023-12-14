@@ -55,6 +55,7 @@ public sealed class Column : IEnumerable<string>, IDisposable
         graphics?.Dispose();
         Bitmap?.Dispose();
         stringFormat?.Dispose();
+        // Don't dispose of Font, since it's created outside this class and passed in as a parameter
         GC.SuppressFinalize(this);
         disposed = true;
     }

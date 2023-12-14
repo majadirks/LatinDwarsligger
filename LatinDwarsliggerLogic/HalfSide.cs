@@ -1,12 +1,11 @@
 ﻿namespace LatinDwarsliggerLogic;
-public sealed class HalfSide : IDisposable
+public sealed class HalfSide
 {
     public Column LeftColumn { get; init; }
     public Column? RightColumn { get; init; }
     public int ColumnCount => RightColumn == null ? 2 : 1;
     public decimal LeftRightMarginInches { get; init; }
     public decimal TopBottomMarginInches { get; init; }
-    private bool disposed;
     public float Width =>
         RightColumn == null ?
         LeftColumn.Width() + Convert.ToSingle(2 * LeftRightMarginInches) :
@@ -15,7 +14,6 @@ public sealed class HalfSide : IDisposable
     {
         this.LeftColumn = leftColumn;
         this.RightColumn = rightColumn;
-        disposed = false;
     }
 
     public override string ToString()
@@ -25,17 +23,5 @@ public sealed class HalfSide : IDisposable
 
         var zipped = LeftColumn.Zip(RightColumn, resultSelector: (str1, str2) => $"{str1 ?? ""}\t| {str2 ?? ""}");
         return string.Join(Environment.NewLine, zipped);
-
     }
-
-    public void Dispose()
-    {
-        if (disposed) return;
-        LeftColumn?.Dispose();
-        RightColumn?.Dispose();
-        GC.SuppressFinalize(this);
-        disposed = true;
-    }
-
-    ~HalfSide() => Dispose();
 }
