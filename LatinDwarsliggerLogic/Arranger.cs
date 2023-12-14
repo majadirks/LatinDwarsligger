@@ -27,9 +27,9 @@ namespace LatinDwarsliggerLogic;
 /// </summary>
 public class Arranger
 {
-    public Arranger(Font font, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch = 320)
+    public Arranger(String fontFamilyName, float emSizeInches, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch = 320)
     {
-        this.font = font;
+        this.font = new Font(familyName: fontFamilyName, emSize: emSizeInches, style: FontStyle.Regular, unit: GraphicsUnit.Inch);
         PageDoubleHeightInches = pageDoubleHeightInches;
         PageWidthInches = pageWidthInches;
         LeftRightMarginInches = leftRightMarginInches;
@@ -100,7 +100,7 @@ public class Arranger
                 throw new Exception($"Could not add line '{line}' to a column.");
 
             // If final two lines are a break and a line, move the line to the next column
-            if (col.Contents.Count > 0 && string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
+            if (col.Contents.Count >= 2 && string.IsNullOrWhiteSpace(col.Contents.SkipLast(1).Last()))
             {
                 i--;
                 col.RemoveFinalTwoLines();

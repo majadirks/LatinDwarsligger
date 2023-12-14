@@ -33,7 +33,10 @@ public class Column : IEnumerable<string>
     }
     public float Height()
     {
-        return Contents.Count * font.Size;
+        string contentsStr = string.Join(Environment.NewLine, Contents);
+        Debug.Assert(contentsStr != null);
+        SizeF size = graphics.MeasureString(text: contentsStr, font: font);
+        return size.Height;
     }
     public decimal LeftRightMarginInches { get; init; }
     public decimal TopBottomMarginInches { get; init; }
