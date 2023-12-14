@@ -27,10 +27,10 @@ namespace LatinDwarsliggerLogic;
 /// </summary>
 public class Arranger
 {
-    private const float PICA_POINTS_PER_INCH = 72;
+    private const float TYPOGRAPHIC_POINTS_PER_INCH = 72;
     public Arranger(String fontFamilyName, float emSizePoints, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch = 320)
     {
-        float emSizeInches = emSizePoints / PICA_POINTS_PER_INCH;
+        float emSizeInches = emSizePoints / TYPOGRAPHIC_POINTS_PER_INCH;
         this.font = new Font(familyName: fontFamilyName, emSize: emSizeInches, style: FontStyle.Regular, unit: GraphicsUnit.Inch);
         PageDoubleHeightInches = pageDoubleHeightInches;
         PageWidthInches = pageWidthInches;
