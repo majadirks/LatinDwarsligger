@@ -14,6 +14,7 @@ public sealed class Column : IEnumerable<string>, IDisposable
         this.LeftRightMarginInches = leftRightMarginInches;
         this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
         this.graphics = Graphics.FromImage(bitmap);
+        this.PixelsPerInch = pixelsPerInch;
         graphics.PageUnit = GraphicsUnit.Inch;
         this.stringFormat = new();
         disposed = false;
@@ -21,6 +22,7 @@ public sealed class Column : IEnumerable<string>, IDisposable
 
     public List<string> Contents { get; private set; }
     public Font Font { get; init; }
+    public int PixelsPerInch { get; init; }
     private readonly Bitmap bitmap;
 
     private readonly Graphics graphics;
