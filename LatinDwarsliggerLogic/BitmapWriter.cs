@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LatinDwarsliggerLogic;
+
 #pragma warning disable CA1416 // Validate platform compatibility
 public class BitmapWriter
 {
