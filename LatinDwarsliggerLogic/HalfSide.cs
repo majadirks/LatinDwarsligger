@@ -8,8 +8,8 @@ public sealed class HalfSide
     public decimal TopBottomMarginInches { get; init; }
     public float Width =>
         RightColumn == null ?
-        LeftColumn.Width() + Convert.ToSingle(2 * LeftRightMarginInches) :
-        LeftColumn.Width() + RightColumn.Width() + Convert.ToSingle(3 * LeftRightMarginInches); // extra margin in the middle
+        LeftColumn.WidthInInches() + Convert.ToSingle(2 * LeftRightMarginInches) :
+        LeftColumn.WidthInInches() + RightColumn.WidthInInches() + Convert.ToSingle(3 * LeftRightMarginInches); // extra margin in the middle
     public HalfSide(Column leftColumn, Column? rightColumn = null)
     {
         this.LeftColumn = leftColumn;

@@ -12,8 +12,8 @@ public sealed class Column : IEnumerable<string>, IDisposable
         this.Font = font;
         this.TopBottomMarginInches = topBottomMarginInches;
         this.LeftRightMarginInches = leftRightMarginInches;
-        this.Bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
-        this.graphics = Graphics.FromImage(Bitmap);
+        this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
+        this.graphics = Graphics.FromImage(bitmap);
         graphics.PageUnit = GraphicsUnit.Inch;
         this.stringFormat = new();
         disposed = false;
@@ -21,20 +21,20 @@ public sealed class Column : IEnumerable<string>, IDisposable
 
     public List<string> Contents { get; private set; }
     public Font Font { get; init; }
-    public Bitmap Bitmap { get; init; }
+    private readonly Bitmap bitmap;
 
     private readonly Graphics graphics;
     private readonly StringFormat stringFormat;
     private bool disposed;
     
-    public float Width()
+    public float WidthInInches()
     {
         string? longestLine = Contents.MaxBy(line => line.Length);
         Debug.Assert(longestLine != null);
         SizeF stringSize = graphics.MeasureString(text: longestLine, font: Font);
         return stringSize.Width; // I expect a line of dactylic hexameter in 11pt font to be >1000 pixels, or 3.5 inches 
     }
-    public float Height()
+    public float HeightInInches()
     {
         string contentsStr = string.Join(Environment.NewLine, Contents);
         Debug.Assert(contentsStr != null);
@@ -53,7 +53,7 @@ public sealed class Column : IEnumerable<string>, IDisposable
     {
         if (disposed) return;
         graphics?.Dispose();
-        Bitmap?.Dispose();
+        bitmap?.Dispose();
         stringFormat?.Dispose();
         // Don't dispose of Font, since it's created outside this class and passed in as a parameter
         GC.SuppressFinalize(this);
