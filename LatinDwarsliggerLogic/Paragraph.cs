@@ -46,12 +46,4 @@ public class Paragraph : IEnumerable<string>, IEquatable<Paragraph>
         }
         return hashCode;
     }
-
-    public ParagraphSize GetSize(Font font)
-    {
-        float width = Lines.Width(font);
-        float height = Lines.Height(font);
-        return new(WidthInInches: width, HeightInInches: height);
-    }
-
 }
