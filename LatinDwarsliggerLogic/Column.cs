@@ -4,38 +4,41 @@ using System.Drawing;
 
 namespace LatinDwarsliggerLogic;
 #pragma warning disable CA1416 // Validate platform compatibility
-public class Column : IEnumerable<string>
+public sealed class Column : IEnumerable<string>, IDisposable
 {
     public Column(Font font, decimal maxHeightInches, decimal maxWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch)
     {
         this.Contents = [];
-        this.font = font;
+        this.Font = font;
         this.TopBottomMarginInches = topBottomMarginInches;
         this.LeftRightMarginInches = leftRightMarginInches;
         this.bitmap = new(width: Convert.ToInt32(maxWidthInches * pixelsPerInch), height: Convert.ToInt32(maxHeightInches * pixelsPerInch));
         this.graphics = Graphics.FromImage(bitmap);
         graphics.PageUnit = GraphicsUnit.Inch;
         this.stringFormat = new();
+        disposed = false;
     }
 
     public List<string> Contents { get; private set; }
+    public Font Font { get; init; }
     private readonly Bitmap bitmap;
+
     private readonly Graphics graphics;
-    private readonly Font font;
     private readonly StringFormat stringFormat;
+    private bool disposed;
     
-    public float Width()
+    public float WidthInInches()
     {
         string? longestLine = Contents.MaxBy(line => line.Length);
         Debug.Assert(longestLine != null);
-        SizeF stringSize = graphics.MeasureString(text: longestLine, font: font);
-        return stringSize.Width; // I expect a line of dactylic hex. to be >1000 pixels, or 3.5 inches
+        SizeF stringSize = graphics.MeasureString(text: longestLine, font: Font);
+        return stringSize.Width; // I expect a line of dactylic hexameter in 11pt font to be >1000 pixels, or 3.5 inches 
     }
-    public float Height()
+    public float HeightInInches()
     {
         string contentsStr = string.Join(Environment.NewLine, Contents);
         Debug.Assert(contentsStr != null);
-        SizeF size = graphics.MeasureString(text: contentsStr, font: font);
+        SizeF size = graphics.MeasureString(text: contentsStr, font: Font);
         return size.Height;
     }
     public decimal LeftRightMarginInches { get; init; }
@@ -44,6 +47,19 @@ public class Column : IEnumerable<string>
     public IEnumerator<string> GetEnumerator() => Contents.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Contents).GetEnumerator();
     public override string ToString() => string.Join(Environment.NewLine, Contents);
-    public void RemoveFinalTwoLines() => Contents = Contents.SkipLast(2).ToList(); 
+    public void RemoveFinalTwoLines() => Contents = Contents.SkipLast(2).ToList();
+
+    public void Dispose()
+    {
+        if (disposed) return;
+        graphics?.Dispose();
+        bitmap?.Dispose();
+        stringFormat?.Dispose();
+        // Don't dispose of Font, since it's created outside this class and passed in as a parameter
+        GC.SuppressFinalize(this);
+        disposed = true;
+    }
+
+    ~Column() => Dispose();
 }
 #pragma warning restore CA1416 // Validate platform compatibility

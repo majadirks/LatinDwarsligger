@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Diagnostics;
-
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -91,7 +85,7 @@ public class Arranger
             
 
             // Add lines until the next line would push the column above the max height
-            for (; col.Height() + lineHeight < halfSideHeightInches && i < lines.Length; i++)
+            for (; col.HeightInInches() + lineHeight < halfSideHeightInches && i < lines.Length; i++)
             {
                 line = lines[i];
                 col.Contents.Add(line);
