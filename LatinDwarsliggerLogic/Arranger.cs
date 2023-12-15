@@ -3,6 +3,9 @@ using System.Diagnostics;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
+
+public delegate SizeF StringMeasurer(string text);
+
 /// <summary>
 /// Given some chunks of text,
 /// decide how to lay them out on a page
@@ -19,21 +22,32 @@ namespace LatinDwarsliggerLogic;
 ///   - Similarly, if the font size allows two columns of dactylic hexameter
 ///   - to fit on a HalfSide, make it so.
 /// </summary>
-public class Arranger
+public class Arranger : IDisposable
 {
     private const float TYPOGRAPHIC_POINTS_PER_INCH = 72;
-    public Arranger(String fontFamilyName, float emSizePoints, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch)
+    public Arranger(string fontFamilyName, float emSizePoints, decimal pageDoubleHeightInches, decimal pageWidthInches, decimal leftRightMarginInches, decimal topBottomMarginInches, int pixelsPerInch)
     {
+        disposed = false;
         float emSizeInches = emSizePoints / TYPOGRAPHIC_POINTS_PER_INCH;
-        this.font = new Font(familyName: fontFamilyName, emSize: emSizeInches, style: FontStyle.Regular, unit: GraphicsUnit.Inch);
         PageDoubleHeightInches = pageDoubleHeightInches;
         PageWidthInches = pageWidthInches;
         LeftRightMarginInches = leftRightMarginInches;
-        TopBottomMarginInches = topBottomMarginInches;      
+        TopBottomMarginInches = topBottomMarginInches;
         PixelsPerInch = pixelsPerInch;
+
+        this.font = new Font(familyName: fontFamilyName, emSize: emSizeInches, style: FontStyle.Regular, unit: GraphicsUnit.Inch);
+        this.bitmap = new(width: Convert.ToInt32(PageWidthInches * pixelsPerInch), height: Convert.ToInt32(HalfSideHeightInches * pixelsPerInch));
+        this.graphics = Graphics.FromImage(bitmap);
+        graphics.PageUnit = GraphicsUnit.Inch;
+        measureString = line => graphics.MeasureString(text: line, font: font);
     }
 
     private readonly Font font;
+    private readonly Bitmap bitmap;
+
+    private readonly Graphics graphics;
+    private readonly StringMeasurer measureString;
+    private bool disposed;
     public decimal PageDoubleHeightInches { get; init; }
     public decimal HalfSideHeightInches => (PageDoubleHeightInches / 2) - (TopBottomMarginInches * 2);
     public decimal PageWidthInches { get; init; }
@@ -67,13 +81,7 @@ public class Arranger
         for (int colIdx = 0; i < lines.Length; colIdx++)
         {
             lineAdded = false;
-            Column col = new(
-                font: font, 
-                leftRightMarginInches: LeftRightMarginInches,
-                topBottomMarginInches: TopBottomMarginInches, 
-                maxHeightInches: HalfSideHeightInches, 
-                maxWidthInches: PageWidthInches,
-                pixelsPerInch: PixelsPerInch);
+            Column col = new(font: font, pixelsPerInch: PixelsPerInch, measureString: measureString);
             // In new column, skip any opening breaks
             string line = lines[i];
             while (string.IsNullOrWhiteSpace(line) && i < lines.Length)
@@ -81,8 +89,6 @@ public class Arranger
                 i++;
                 line = lines[i];
             }
-
-            
 
             // Add lines until the next line would push the column above the max height
             for (; col.HeightInInches() + lineHeight < halfSideHeightInches && i < lines.Length; i++)
@@ -157,5 +163,16 @@ public class Arranger
         }
         return paperSheets;
     }
+
+    public void Dispose()
+    {
+        if (disposed) return;
+        graphics?.Dispose();
+        bitmap?.Dispose();
+        font?.Dispose();
+        GC.SuppressFinalize(this);
+        disposed = true;
+    }
+    ~Arranger() => Dispose();
 }
 #pragma warning restore CA1416 // Validate platform compatibility
