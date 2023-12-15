@@ -1,6 +1,6 @@
 ﻿using LatinDwarsliggerLogic;
-
 namespace LatinDwarsliggerTest;
+#pragma warning disable CA1416 // Validate platform compatibility
 
 [TestClass]
 public class BitmapWriter_Tests
@@ -58,9 +58,14 @@ public class BitmapWriter_Tests
         var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
 
         // Act
-        foreach (var page in pages)
+        var images = pages.Select(page => page.ToBitmaps(arr)).ToArray();
+
+        for (int i = 0; i < images.Length; i++)
         {
-            page.ToBitmaps(arr);
+            var image = images[i];
+            image.SideASideD.Save($"{i:D2}_sideAsideD.bmp");
+            image.SideBSideC?.Save($"{i:D2}_sideBsideC.bmp");
         }
     }
 }
+#pragma warning restore CA1416 // Validate platform compatibility

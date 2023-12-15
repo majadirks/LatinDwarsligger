@@ -4,7 +4,7 @@ using System.Drawing.Text;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
-public record PaperSheetImages(Bitmap SideASideD, Bitmap SideBSideC);
+public record PaperSheetImages(Bitmap SideASideD, Bitmap? SideBSideC);
 public static class BitmapWriter
 {
     private static float GetPadding(Font font, int pixelsPerInch) => 0.2f * font.Size * pixelsPerInch;
@@ -77,13 +77,50 @@ public static class BitmapWriter
         int pixelsPerInch = arranger.PixelsPerInch;
         float padding = GetPadding(font, pixelsPerInch);
 
+        Bitmap sideASideD = paperSheet.GetSideASideDBitmap(arranger);
+        Bitmap? sideBSideC = paperSheet.GetSideBSideCBitmap(arranger);   
+        return new PaperSheetImages(sideASideD, sideBSideC);
+    }
+    private static Bitmap GetSideASideDBitmap(this PaperSheet paperSheet, Arranger arranger)
+    {
         Bitmap sideA = paperSheet.SideA.ToBitmap(arranger);
+        sideA.RotateFlip(RotateFlipType.Rotate180FlipNone);
+        Bitmap? sideD = paperSheet.SideD?.ToBitmap(arranger);
+        sideD?.RotateFlip(RotateFlipType.Rotate180FlipNone);
+        int pixelsPerInch = arranger.PixelsPerInch;
+        // A above D, both upside-down
+        Bitmap sideASideD;
+        if (sideD != null)
+        {
+            sideASideD = new(
+            width: Math.Max(Convert.ToInt32(arranger.PageWidthInches * pixelsPerInch), Math.Max(sideA.Width, sideD.Width)),
+            height: Math.Max(Convert.ToInt32(arranger.PageDoubleHeightInches * pixelsPerInch), sideA.Height + sideD.Height));
+            sideASideD.SetResolution(pixelsPerInch, pixelsPerInch);
+            Graphics g = FromBitmap(sideASideD);
+            g.DrawImage(sideA, x: 0, y: 0);
+            g.DrawImage(sideD, x: 0, y: (arranger.HalfSideHeightInches + 2 * arranger.TopBottomMarginInches) * pixelsPerInch);
+        }
+        else // side A not null, side D is null
+        {
+            sideASideD = new(
+            width: Math.Max(Convert.ToInt32(arranger.PageWidthInches * pixelsPerInch), sideA.Width),
+            height: Math.Max(Convert.ToInt32(arranger.PageDoubleHeightInches * pixelsPerInch), sideA.Height));
+            sideASideD.SetResolution(pixelsPerInch, pixelsPerInch);
+            Graphics g = FromBitmap(sideASideD);
+            g.DrawImage(sideA, x: 0, y: 0);
+        }
+        
+        return sideASideD;
+    }
+
+
+    private static Bitmap? GetSideBSideCBitmap(this PaperSheet paperSheet, Arranger arranger)
+    {
         Bitmap? sideB = paperSheet.SideB?.ToBitmap(arranger);
         Bitmap? sideC = paperSheet.SideC?.ToBitmap(arranger);
-        Bitmap? sideD = paperSheet.SideD?.ToBitmap(arranger);
-
+        int pixelsPerInch = arranger.PixelsPerInch;
         // B above C, right-side-up
-        Bitmap? sideBSideC;
+        Bitmap? sideBSideC = null;
         if (sideB != null)
         {
             if (sideC != null)
@@ -107,14 +144,11 @@ public static class BitmapWriter
                 Graphics g = FromBitmap(sideBSideC);
                 g.DrawImage(sideB, x: 0, y: 0);
             }
-            sideBSideC?.Save("sidebc.bmp");
-            
-
         }
-        throw new NotImplementedException();
+        return sideBSideC;
     }
 
-    private static Graphics FromBitmap(Bitmap bitmap)
+        private static Graphics FromBitmap(Bitmap bitmap)
     {
         Graphics graphics = Graphics.FromImage(bitmap);
         graphics.CompositingQuality = CompositingQuality.HighQuality;
