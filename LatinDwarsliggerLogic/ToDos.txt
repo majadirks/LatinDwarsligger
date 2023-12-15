@@ -22,6 +22,8 @@ Format texts from The Latin Library in a way that can be printed and bound into 
 ------	 -------
 
 ToDo: Enforce line breaks for prose at page end ("rounded down" to the nearest word)
+ToDo: solid line for folding on SideBSideC side
+ToDo: Combine bitmaps into a printable PDF
 
 -=Nice to have=-
 The "next level" would be to format PDFs like this.
