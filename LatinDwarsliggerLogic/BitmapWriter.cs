@@ -63,8 +63,10 @@ public static class BitmapWriter
                 y: y);
         }
 
-        string path = halfSide.LeftColumn.Contents.First().Substring(0, 10) + "_halfSide.bmp";
-        bitmap.Save(path);
+        // debug code
+        //string path = halfSide.LeftColumn.Contents.First().Substring(0, 10) + "_halfSide.bmp";
+        //bitmap.Save(path);
+
         return bitmap;
     }
 
