@@ -43,4 +43,24 @@ public class BitmapWriter_Tests
             halfSide.ToBitmap(arr);
         }
     }
+
+    [TestMethod]
+    public void WriteAeneidToPageBitmaps_Test()
+    {
+        // ToDo: Make explicit, add assertions
+
+        // Arrange
+        string path = "resources/aen1.html";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Arranger arr = Arranger.Default;
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
+
+        // Act
+        foreach (var page in pages)
+        {
+            page.ToBitmaps(arr);
+        }
+    }
 }

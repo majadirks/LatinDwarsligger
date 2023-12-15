@@ -4,6 +4,7 @@ using System.Drawing.Text;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
+public record PaperSheetImages(Bitmap SideASideD, Bitmap SideBSideC);
 public static class BitmapWriter
 {
     private static float GetPadding(Font font, int pixelsPerInch) => 0.2f * font.Size * pixelsPerInch;
@@ -68,6 +69,49 @@ public static class BitmapWriter
         //bitmap.Save(path);
 
         return bitmap;
+    }
+
+    public static PaperSheetImages ToBitmaps(this PaperSheet paperSheet, Arranger arranger)
+    {
+        Font font = arranger.Font;
+        int pixelsPerInch = arranger.PixelsPerInch;
+        float padding = GetPadding(font, pixelsPerInch);
+
+        Bitmap sideA = paperSheet.SideA.ToBitmap(arranger);
+        Bitmap? sideB = paperSheet.SideB?.ToBitmap(arranger);
+        Bitmap? sideC = paperSheet.SideC?.ToBitmap(arranger);
+        Bitmap? sideD = paperSheet.SideD?.ToBitmap(arranger);
+
+        // B above C, right-side-up
+        Bitmap? sideBSideC;
+        if (sideB != null)
+        {
+            if (sideC != null)
+            {
+                sideBSideC = new(
+                width: Math.Max(Convert.ToInt32(arranger.PageWidthInches * pixelsPerInch), Math.Max(sideB.Width, sideC.Width)),
+                height: Math.Max(Convert.ToInt32(arranger.PageDoubleHeightInches * pixelsPerInch), sideB.Height + sideC.Height));
+                sideBSideC.SetResolution(pixelsPerInch, pixelsPerInch);
+
+                Graphics g = FromBitmap(sideBSideC);
+                g.DrawImage(sideB, x: 0, y: 0);
+                g.DrawImage(sideC, x: 0, y: (arranger.HalfSideHeightInches + 2 * arranger.TopBottomMarginInches) * pixelsPerInch);
+            }
+            else // side B not null, side C is nulll
+            {
+                sideBSideC = new(
+                width: Math.Max(Convert.ToInt32(arranger.PageWidthInches * pixelsPerInch), sideB.Width),
+                height: Math.Max(Convert.ToInt32(arranger.PageDoubleHeightInches * pixelsPerInch), sideB.Height));
+                sideBSideC.SetResolution(pixelsPerInch, pixelsPerInch);
+
+                Graphics g = FromBitmap(sideBSideC);
+                g.DrawImage(sideB, x: 0, y: 0);
+            }
+            sideBSideC?.Save("sidebc.bmp");
+            
+
+        }
+        throw new NotImplementedException();
     }
 
     private static Graphics FromBitmap(Bitmap bitmap)
