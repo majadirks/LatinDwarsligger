@@ -43,8 +43,10 @@ for (int i = 0; i < pages.Length; i++)
     psis.Add(page.ToBitmaps(arr));
 }
 
-Console.WriteLine("Generating PDF...");
+string pdfPath = $"{name}.pdf";
+Console.WriteLine($"Generating PDF '{pdfPath}'...");
 IProgress<string> logger = new Progress<string>(str => Console.WriteLine($"\t{str}"));
-DwarsliggerPdf.GeneratePdf($"{name}.pdf", psis, logger);
+
+DwarsliggerPdf.GeneratePdf(pdfPath, psis, logger);
 
 Console.WriteLine("Done.");
