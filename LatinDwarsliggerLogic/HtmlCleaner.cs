@@ -25,6 +25,7 @@ namespace LatinDwarsliggerLogic
             formatted = formatted.RemoveParagraphCloseTags();
             formatted = formatted.RemoveDivTags();
             formatted = formatted.FormatAngleBrackets();
+            formatted = formatted.FormatEmDashes();
             formatted = formatted.Skip(1); // remove header stuff
             formatted = formatted.RemoveRedundantParagraphTags();
             formatted = formatted.Select(line => line.Trim());
@@ -107,6 +108,12 @@ namespace LatinDwarsliggerLogic
         {
             // Don't delete the bolded content, just the tags
             return lines.Select(line => line.Replace("<b>", "").Replace("</b>", ""));
+        }
+
+        private static IEnumerable<string> FormatEmDashes(this IEnumerable<string> lines)
+        {
+            // &#151; is not an em dash, but Latin Library treats it as one.
+            return lines.Select(line => line.Replace("&#151;", "—"));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
