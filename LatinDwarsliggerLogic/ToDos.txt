@@ -13,12 +13,12 @@ Format texts from The Latin Library in a way that can be printed and bound into 
 - Ability to specify a "cover image"
 - User can specify margins, page height, and font size. Default to 8.5" x 8.5" square.
 
-- Consecutive pages A, B, C, E should come out looking like
+- Consecutive pages A, B, C, D should come out looking like
 
 -------  -------
 |  B  |	 | ∀  |
 |-----|	 |-----|
-|  C  |	 | Ǝ   |
+|  C  |	 | (|  |
 ------	 -------
 
 ToDo: UI tool takes URL, shows pages as text, can generate bitmaps (ultimately pdfs)

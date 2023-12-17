@@ -81,13 +81,38 @@ public static class BitmapWriter
         Bitmap? sideBSideC = paperSheet.GetSideBSideCBitmap(arranger);   
         return new PaperSheetImages(sideASideD, sideBSideC);
     }
+
+    private static Bitmap DrawSmallDotInLowerRightHandCorner(this Bitmap sideA, int pixelsPerInch)
+    {
+        float x = sideA.Width - 0.2f * pixelsPerInch;
+        float y = sideA.Height - 0.2f * pixelsPerInch;
+        float diameter = 0.03f * pixelsPerInch;
+        using Graphics g = Graphics.FromImage(sideA);
+        using Brush brush = new SolidBrush(Color.Black);
+        g.FillEllipse(brush, x: x, y: y, width: diameter, height: diameter);
+        return sideA;
+    }
+
+    private static Bitmap DrawLineInMiddleOfPage(this Bitmap pageSide)
+    {
+        using Graphics g = Graphics.FromImage(pageSide);
+        using Pen pen = new(Color.Black);
+        Point start = new(x: 0, y: pageSide.Height / 2);
+        Point end = new Point(x: pageSide.Width, y: pageSide.Height / 2);
+        g.DrawLine(pen, start, end);
+        return pageSide;
+    }
+
     private static Bitmap GetSideASideDBitmap(this PaperSheet paperSheet, Arranger arranger)
     {
+        int pixelsPerInch = arranger.PixelsPerInch;
         Bitmap sideA = paperSheet.SideA.ToBitmap(arranger);
+        sideA = sideA.DrawSmallDotInLowerRightHandCorner(pixelsPerInch);
+        
         sideA.RotateFlip(RotateFlipType.Rotate180FlipNone);
         Bitmap? sideD = paperSheet.SideD?.ToBitmap(arranger);
         sideD?.RotateFlip(RotateFlipType.Rotate180FlipNone);
-        int pixelsPerInch = arranger.PixelsPerInch;
+        
         // A above D, both upside-down
         Bitmap sideASideD;
         if (sideD != null)
@@ -109,7 +134,7 @@ public static class BitmapWriter
             Graphics g = FromBitmap(sideASideD);
             g.DrawImage(sideA, x: 0, y: 0);
         }
-        
+        sideASideD.DrawLineInMiddleOfPage();
         return sideASideD;
     }
 
