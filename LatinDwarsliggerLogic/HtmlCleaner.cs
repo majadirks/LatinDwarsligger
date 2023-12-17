@@ -78,12 +78,15 @@ namespace LatinDwarsliggerLogic
         /// </summary>
         private static string DeleteTags(string line, string tag)
         {
-            int start = line.IndexOf($"<{tag}");
-            if (start == -1) return line; // no span to delete
-            int end = line.IndexOf($"</{tag}>");
-            if (end == -1) return line; // badly formed line; ignore
-            int endTagCharCount = tag.Length + 3;
-            return string.Concat(line.AsSpan(0, start), line.AsSpan(end + endTagCharCount));
+            while (line.Contains($"<{tag}"))
+            {
+                int start = line.IndexOf($"<{tag}");
+                int end = line.IndexOf($"</{tag}>");
+                if (end == -1) return line; // no end of tag; just give up here.
+                int endTagCharCount = tag.Length + 3;
+                line = string.Concat(line.AsSpan(0, start), line.AsSpan(end + endTagCharCount));
+            }
+            return line;
         }
 
         private static IEnumerable<string> DeleteATags(this IEnumerable<string> lines)
