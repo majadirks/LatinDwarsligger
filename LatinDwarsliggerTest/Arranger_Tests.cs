@@ -61,5 +61,19 @@ public class Arranger_Tests
         var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
     }
 
+    [TestMethod]
+    public void ArrangeApuleiusIntoPages()
+    {
+        // Arrange
+        string path = "resources/ApuleiusMetamorphosesI.htm";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Arranger arr = Arranger.Default;
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+
+        // Act
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
+    }
+
 }
 #pragma warning restore CA1416 // Validate platform compatibility

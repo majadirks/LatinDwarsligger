@@ -21,6 +21,7 @@ namespace LatinDwarsliggerLogic
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
             formatted = formatted.RemoveDivTags();
+            formatted = formatted.FormatAngleBrackets();
             formatted = formatted.Skip(1); // remove header stuff
             formatted = formatted.RemoveRedundantParagraphTags();
             formatted = formatted.Select(line => line.Trim());
@@ -157,6 +158,11 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
         {
             return text.Select(line => line.Replace("<div>", ""));
+        }
+
+        public static IEnumerable<string> FormatAngleBrackets(this IEnumerable<string> text)
+        {
+            return text.Select(line => line.Replace("&lt;", "<").Replace("&gt;", ">"));
         }
 
         public static IEnumerable<Paragraph> ParseTextIntoChunks(this IEnumerable<string> lines)

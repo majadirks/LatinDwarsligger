@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Diagnostics;
+using System.Text;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -80,6 +81,7 @@ public class Arranger : IDisposable
 
         string[] lines = paragraphs
             .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
+            .SelectMany(BreakLineAtPage) // make sure lines don't exceed max allowable width
             .SkipLast(1) // ignore paragraph break
             .ToArray();
 
@@ -169,6 +171,28 @@ public class Arranger : IDisposable
             paperSheets.Add(nextSheet);
         }
         return paperSheets;
+    }
+
+    private IEnumerable<string> BreakLineAtPage(string line)
+    {
+        float maxWidth = PageWidthInches - 2 * LeftRightMarginInches;
+        if (measureString(line).Width < maxWidth)
+            return new string[] { line };
+
+        Queue<string> words = new(line.Split(" "));
+        List<string> broken = [];
+
+        StringBuilder nextLine = new();
+        while (words.Count > 0)
+        {
+            while (measureString(nextLine.ToString()).Width < maxWidth && words.TryDequeue(out string? nextWord))
+            {
+                nextLine.Append(nextWord + " ");
+            }
+            broken.Add(nextLine.ToString());
+            nextLine = new();
+        }
+        return broken;
     }
 
     public void Dispose()
