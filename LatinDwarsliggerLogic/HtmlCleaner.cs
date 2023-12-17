@@ -35,7 +35,7 @@ namespace LatinDwarsliggerLogic
                 .DeleteTags("center")
                 .DeleteTags("hr")
                 .DeleteTags("blockquote");
-            formatted = formatted.DeleteBoldTags();
+            formatted = formatted.DeleteBoldAndItalicTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
             formatted = formatted.RemoveDivTags();
@@ -87,7 +87,7 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<string> StripLineNumbers(this IEnumerable<string> verses)
         {
             return verses
-                .Select(verse => verse.Replace("&nbsp;", ""))
+                .Select(verse => verse.Replace("&nbsp;", "", StringComparison.InvariantCultureIgnoreCase))
                 .Select(line => DeleteTags(line, "span"));
         }
 
@@ -96,10 +96,10 @@ namespace LatinDwarsliggerLogic
         /// </summary>
         private static string DeleteTags(this string line, string tag)
         {
-            while (line.Contains($"<{tag}"))
+            while (line.Contains($"<{tag}", StringComparison.InvariantCultureIgnoreCase))
             {
-                int start = line.IndexOf($"<{tag}");
-                int end = line.IndexOf($"</{tag}>");
+                int start = line.IndexOf($"<{tag}", StringComparison.InvariantCultureIgnoreCase);
+                int end = line.IndexOf($"</{tag}>", StringComparison.InvariantCultureIgnoreCase);
                 if (end == -1) return line; // no end of tag; just give up here.
                 int endTagCharCount = tag.Length + 3;
                 line = string.Concat(line.AsSpan(0, start), line.AsSpan(end + endTagCharCount));
@@ -115,16 +115,19 @@ namespace LatinDwarsliggerLogic
             return lines.Select(
                 line => 
                     line.DeleteTags(tag)
-                    .DeleteTags(tag.ToUpper())
                     .Replace($"<{tag}>", "") //clean up any tags (eg <link>) that don't have a closing tag
-                    .Replace($"<{tag.ToUpper()}>", "")
                     .Replace("[]",""));
         }
 
-        private static IEnumerable<string> DeleteBoldTags(this IEnumerable<string> lines)
+        private static IEnumerable<string> DeleteBoldAndItalicTags(this IEnumerable<string> lines)
         {
-            // Don't delete the bolded content, just the tags
-            return lines.Select(line => line.Replace("<b>", "").Replace("</b>", ""));
+            // Don't delete the bolded content, just the tags.
+            // Ironic that we are deleting italic tags from Italic texts, but there you go.
+            return lines.Select(line => line
+            .Replace("<b>", "", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("</b>", "", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("<i>", "", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("</i>", "", StringComparison.InvariantCultureIgnoreCase));
         }
 
         private static IEnumerable<string> FormatEmDashes(this IEnumerable<string> lines)
@@ -169,10 +172,10 @@ namespace LatinDwarsliggerLogic
         {
             var x = string.
                 Join(" ", text)
+                .Replace("<BR>", "<br>", StringComparison.InvariantCultureIgnoreCase)
+                .Replace("</BR>", "</br>", StringComparison.InvariantCultureIgnoreCase)
                 .Split("<br>")
-                .SelectMany(str =>  str.Split("<BR>"))
-                .SelectMany(str => str.Split("</br>"))
-                .SelectMany(str => str.Split("</BR>"));
+                .SelectMany(str => str.Split("</br>"));
             var y = x
                 .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()
