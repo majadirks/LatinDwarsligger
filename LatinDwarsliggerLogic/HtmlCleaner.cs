@@ -133,7 +133,11 @@ namespace LatinDwarsliggerLogic
         private static IEnumerable<string> FormatEmDashes(this IEnumerable<string> lines)
         {
             // &#151; is not an em dash, but Latin Library treats it as one.
-            return lines.Select(line => line.Replace("&#151;", "—").Replace("&#151", "—"));
+            return lines.Select(line => line
+            .Replace("&#151;", "—")
+            .Replace("&#151", "—")
+            .Replace("&mdash;", "—", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&mdash", "—", StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
