@@ -1,8 +1,12 @@
-﻿using LatinDwarsliggerLogic;
+﻿// Run this tool from the command line by supp
+
+using LatinDwarsliggerLogic;
 
 if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
 {
     Console.WriteLine("Please provide the URL of a Latin Library text.");
+    Console.WriteLine("For example:");
+    Console.WriteLine("\t.\\MakeDwarsligger.exe \"https://www.thelatinlibrary.com/valeriusflaccus1.html\"");
     return;
 }
 
