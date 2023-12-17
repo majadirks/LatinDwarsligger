@@ -1,10 +1,15 @@
 ﻿#pragma warning disable CA1416 // Validate platform compatibility
 using LatinDwarsliggerLogic;
 
-if (args.Length == 0 && !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
+if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
 {
     Console.WriteLine("Please provide the URL of a Latin Library text.");
     return;
+}
+
+if (args.Where(arg => arg.ToLower().Equals("delete_bmps")).Any())
+{
+    File.Delete("*.bmp");
 }
 
 var urls = args.Where(arg => arg.Contains("thelatinlibrary.com"));
