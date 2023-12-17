@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Diagnostics;
+using System.Text;
 namespace LatinDwarsliggerLogic;
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -80,6 +81,7 @@ public class Arranger : IDisposable
 
         string[] lines = paragraphs
             .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
+            .SelectMany(BreakLineAtPage) // make sure lines don't exceed max allowable width
             .SkipLast(1) // ignore paragraph break
             .ToArray();
 
@@ -169,6 +171,73 @@ public class Arranger : IDisposable
             paperSheets.Add(nextSheet);
         }
         return paperSheets;
+    }
+
+    private IEnumerable<string> BreakLineAtPage(string line)
+    {
+        float maxWidth = PageWidthInches - 2 * LeftRightMarginInches;
+        if (measureString(line).Width < maxWidth)
+            return new string[] { line };
+
+        Queue<string> words = new(line.Split(" "));
+        List<string> broken = [];
+
+        StringBuilder nextLine = new();
+        while (words.Count > 0)
+        {
+            while (measureString(nextLine.ToString()).Width < maxWidth && words.TryDequeue(out string? nextWord))
+            {
+                float nextWordWidth = measureString(nextWord).Width;
+                if (nextWordWidth >= maxWidth)
+                {
+                    // Unusual case: the word is wider than a page!
+                    broken.AddRange(CurrentLinePlusBrokenLongWord(nextLine, nextWord));
+                    nextLine = new();
+                    continue; // return to next iteration of inner while loop
+                }
+                else
+                {
+                    // Normal case: the next word is not unusually long
+                    nextLine.Append(nextWord + " ");
+                }
+            }
+            if (nextLine.Length > 0) 
+                broken.Add(nextLine.ToString());
+            nextLine = new();
+        }
+        return broken;
+    }
+
+    private IEnumerable<string> CurrentLinePlusBrokenLongWord(StringBuilder nextLine, string longWord)
+    {
+        List<string> toAdd = [];
+        if (nextLine.Length > 0)
+            toAdd.Add(nextLine.ToString());
+        toAdd.AddRange(BreakLongWordAtPage(longWord));
+        return toAdd;
+    }
+
+    /// <summary>
+    /// In the rare case that we have a word that is wider than the page, break it up when it reaches the max
+    /// </summary>
+    /// <param name="longWord"></param>
+    /// <returns></returns>
+    private IEnumerable<string> BreakLongWordAtPage(string longWord)
+    {
+        float maxWidth = PageWidthInches - 2 * LeftRightMarginInches;
+        Queue<char> chars = new(longWord);
+        List<string> broken = [];
+        StringBuilder nextLine = new();
+        while (chars.Count > 0)
+        {
+            while (measureString(nextLine.ToString()).Width < maxWidth && chars.TryDequeue(out char nextChar))
+            {
+                nextLine.Append(nextChar);
+            }
+            broken.Add(nextLine.ToString());
+            nextLine = new();
+        }
+        return broken;
     }
 
     public void Dispose()

@@ -16,11 +16,15 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
+
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
+            formatted = formatted.DeleteTags("a").DeleteTags("title").DeleteTags("link");
+            formatted = formatted.DeleteBoldTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
             formatted = formatted.RemoveDivTags();
+            formatted = formatted.FormatAngleBrackets();
             formatted = formatted.Skip(1); // remove header stuff
             formatted = formatted.RemoveRedundantParagraphTags();
             formatted = formatted.Select(line => line.Trim());
@@ -38,15 +42,15 @@ namespace LatinDwarsliggerLogic
             for (int i = 0; i < line.Length; i++)
             {
                 char c = line[i];
-                if (c == '<')
+                if (c == '<') // found a tag
                 {
-                    bool isEnd = i < line.Length - 1 && line[i + 1] == '/';
-                    if (isEnd)
+                    bool isClosingTag = i < line.Length - 1 && line[i + 1] == '/';
+                    if (isClosingTag)
                     {
                         copy.Add(c);
                         continue;
                     }
-                    while (c != ' ' && i < line.Length - 1)
+                    while (c != ' ' && c != '>' && i < line.Length - 1)
                     {
                         copy.Add(c);
                         i++;
@@ -68,19 +72,41 @@ namespace LatinDwarsliggerLogic
         {
             return verses
                 .Select(verse => verse.Replace("&nbsp;", ""))
-                .Select(DeleteSpanTags);
+                .Select(line => DeleteTags(line, "span"));
         }
 
         /// <summary>
-        /// Find opening "span" tag and delete everything through its close
+        /// Find opening of given tag and delete everything through its close
         /// </summary>
-        private static string DeleteSpanTags(string line)
+        private static string DeleteTags(string line, string tag)
         {
-            int start = line.IndexOf("<span");
-            if (start == -1) return line; // no span to delete
-            int end = line.IndexOf("</span>");
-            if (end == -1) return line; // badly formed line; ignore
-            return string.Concat(line.AsSpan(0, start), line.AsSpan(end + 7));
+            while (line.Contains($"<{tag}"))
+            {
+                int start = line.IndexOf($"<{tag}");
+                int end = line.IndexOf($"</{tag}>");
+                if (end == -1) return line; // no end of tag; just give up here.
+                int endTagCharCount = tag.Length + 3;
+                line = string.Concat(line.AsSpan(0, start), line.AsSpan(end + endTagCharCount));
+            }
+            return line;
+        }
+
+        /// <summary>
+        /// Remove everything within the given tag. Assumes the start and end of the tag are on the same line.
+        /// </summary>
+        private static IEnumerable<string> DeleteTags(this IEnumerable<string> lines, string tag)
+        {
+            return lines.Select(
+                line => 
+                    DeleteTags(line, tag)
+                    .Replace($"<{tag}>", "") //clean up any tags (eg <link>) that don't have a closing tag
+                    .Replace("[]",""));
+        }
+
+        private static IEnumerable<string> DeleteBoldTags(this IEnumerable<string> lines)
+        {
+            // Don't delete the bolded content, just the tags
+            return lines.Select(line => line.Replace("<b>", "").Replace("</b>", ""));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
@@ -157,6 +183,11 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
         {
             return text.Select(line => line.Replace("<div>", ""));
+        }
+
+        public static IEnumerable<string> FormatAngleBrackets(this IEnumerable<string> text)
+        {
+            return text.Select(line => line.Replace("&lt;", "<").Replace("&gt;", ">"));
         }
 
         public static IEnumerable<Paragraph> ParseTextIntoChunks(this IEnumerable<string> lines)
