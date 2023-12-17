@@ -187,22 +187,34 @@ public class Arranger : IDisposable
         {
             while (measureString(nextLine.ToString()).Width < maxWidth && words.TryDequeue(out string? nextWord))
             {
-                if (measureString(nextWord).Width >= maxWidth)
+                float nextWordWidth = measureString(nextWord).Width;
+                if (nextWordWidth >= maxWidth)
                 {
-                    // This is the unusual case where we have an extremely large word that is wider than a page
-                    if (nextLine.Length > 0) 
-                        broken.Add(nextLine.ToString()); // Add the line we've built so far
+                    // Unusual case: the word is wider than a page!
+                    broken.AddRange(CurrentLinePlusBrokenLongWord(nextLine, nextWord));
                     nextLine = new();
-                    broken.AddRange(BreakLongWordAtPage(nextWord)); // And then add the word on its own lines
-                    continue;
+                    continue; // return to next iteration of inner while loop
                 }
-                nextLine.Append(nextWord + " ");
+                else
+                {
+                    // Normal case: the next word is not unusually long
+                    nextLine.Append(nextWord + " ");
+                }
             }
             if (nextLine.Length > 0) 
                 broken.Add(nextLine.ToString());
             nextLine = new();
         }
         return broken;
+    }
+
+    private IEnumerable<string> CurrentLinePlusBrokenLongWord(StringBuilder nextLine, string longWord)
+    {
+        List<string> toAdd = [];
+        if (nextLine.Length > 0)
+            toAdd.Add(nextLine.ToString());
+        toAdd.AddRange(BreakLongWordAtPage(longWord));
+        return toAdd;
     }
 
     /// <summary>
