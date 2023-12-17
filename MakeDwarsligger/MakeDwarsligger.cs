@@ -1,17 +1,9 @@
-﻿#pragma warning disable CA1416 // Validate platform compatibility
-using LatinDwarsliggerLogic;
+﻿using LatinDwarsliggerLogic;
 
 if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
 {
     Console.WriteLine("Please provide the URL of a Latin Library text.");
     return;
-}
-
-if (args.Where(arg => arg.ToLower().Equals("delete_bmps")).Any())
-{
-    var bmps = Directory.EnumerateFiles(".").Where(path => path.EndsWith(".bmp"));
-    foreach (var bmp in bmps)
-        File.Delete(bmp);
 }
 
 var urls = args.Where(arg => arg.Contains("thelatinlibrary.com"));
@@ -37,32 +29,18 @@ var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
 Console.WriteLine($"Arranging {halfSides.Count()} half-sides into sheets...");
 var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides).ToArray();
 
+Console.WriteLine("Generating images...");
+
+List<PaperSheetImages> psis = [];
+for (int i = 0; i < pages.Length; i++)
+{
+    Console.WriteLine($"\tGenerating image {i + 1} of {pages.Length}...");
+    PaperSheet page = pages[i];
+    psis.Add(page.ToBitmaps(arr));
+}
+
 Console.WriteLine("Generating PDF...");
 IProgress<string> logger = new Progress<string>(str => Console.WriteLine($"\t{str}"));
-var psis = 
-DwarsliggerPdf.GeneratePdf($"{name}.pdf", pages.Select(page => page.ToBitmaps(arr)), logger);
+DwarsliggerPdf.GeneratePdf($"{name}.pdf", psis, logger);
 
-//Console.WriteLine("Generating images...");
-
-//List<PaperSheetImages> psis = [];
-//for (int i = 0; i < pages.Length; i++)
-//{
-//    Console.WriteLine($"\tGenerating image {i + 1} of {pages.Length}...");
-//    PaperSheet page = pages[i];
-//    psis.Add(page.ToBitmaps(arr));
-//}
-//
-//Console.WriteLine($"Saving {psis.Count} images...");
-//for (int i = 0; i < psis.Count; i++)
-//{
-//    Console.WriteLine($"\tSaving page {i + 1} of {psis.Count}...");
-//    var image = psis[i];
-//    string pathAD = $"{name}_{i:D2}_sideAsideD.bmp";
-//    Console.WriteLine($"\t\t{pathAD}");
-//    image.SideASideD.Save(pathAD);
-//    string pathBC = $"{name}_{i:D2}_sideBsideC.bmp";
-//    Console.WriteLine($"\t\t{pathBC}");
-//    image.SideBSideC?.Save(pathBC);
-//}
 Console.WriteLine("Done.");
-#pragma warning restore CA1416 // Validate platform compatibility
