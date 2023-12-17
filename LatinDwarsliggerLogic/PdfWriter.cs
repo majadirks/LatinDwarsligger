@@ -17,7 +17,7 @@ public static class DwarsliggerPdf
 {
     public static Document GeneratePdf(string name, List<PaperSheetImages> paperSheetImages, IProgress<string>? logger = null)
     {
-        logger?.Report("Setting up PDF");
+        logger?.Report("Setting up PDF...");
         using var writer = new PdfWriter(name);
         using var pdfDoc = new PdfDocument(writer);
         string tempPath = "temp.bmp";
@@ -28,12 +28,12 @@ public static class DwarsliggerPdf
         int max = paperSheetImages.Count;
         foreach (var psi in paperSheetImages)
         {
-            logger?.Report($"Adding page {i} of {max}");
+            logger?.Report($"Adding page {i} of {max}...");
             AddSheet(document, pdfDoc, psi, tempPath);
             i++;
         }
 
-        logger?.Report("Cleaning up");
+        logger?.Report("Cleaning up...");
         document.Close();
 
         if (File.Exists(tempPath))
