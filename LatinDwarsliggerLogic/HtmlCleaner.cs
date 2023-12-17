@@ -16,10 +16,11 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
-            formatted = formatted.DeleteATags();
-            formatted = formatted.DeleteBoldTags();
+
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
+            formatted = formatted.DeleteTags("a").DeleteTags("title").DeleteTags("link");
+            formatted = formatted.DeleteBoldTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
             formatted = formatted.RemoveDivTags();
@@ -90,9 +91,16 @@ namespace LatinDwarsliggerLogic
             return line;
         }
 
-        private static IEnumerable<string> DeleteATags(this IEnumerable<string> lines)
+        /// <summary>
+        /// Remove everything within the given tag. Assumes the start and end of the tag are on the same line.
+        /// </summary>
+        private static IEnumerable<string> DeleteTags(this IEnumerable<string> lines, string tag)
         {
-            return lines.Select(line => DeleteTags(line, "a").Replace("[]",""));
+            return lines.Select(
+                line => 
+                    DeleteTags(line, tag)
+                    .Replace($"<{tag}>", "") //clean up any tags (eg <link>) that don't have a closing tag
+                    .Replace("[]",""));
         }
 
         private static IEnumerable<string> DeleteBoldTags(this IEnumerable<string> lines)
