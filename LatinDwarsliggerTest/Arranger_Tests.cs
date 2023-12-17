@@ -90,6 +90,20 @@ public class Arranger_Tests
     }
 
     [TestMethod]
+    public void ArrangeCarminaBuranaIntoPages()
+    {
+        // Arrange
+        string path = "resources/Carmina Burana.htm";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Arranger arr = Arranger.Default;
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+
+        // Act
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
+    }
+
+    [TestMethod]
     public void BreakLongWordAtChar()
     {
         // Arrange: A few words with spaces, plus a really long word with no spaces

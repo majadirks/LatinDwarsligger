@@ -21,6 +21,7 @@ Format texts from The Latin Library in a way that can be printed and bound into 
 |  C  |	 | (|  |
 ------	 -------
 
+ToDo: https://www.thelatinlibrary.com/carm.bur.html has no data, figure out why
 ToDo: UI tool takes URL, shows pages as text, can generate bitmaps (ultimately pdfs)
 ToDo: Console tool takes url, generates bitmaps (ultimately pdfs)
 ToDo: sheet number in lower-right of Side A; solid line for folding in middle of SideASideD.
