@@ -9,7 +9,9 @@ if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).
 
 if (args.Where(arg => arg.ToLower().Equals("delete_bmps")).Any())
 {
-    File.Delete("*.bmp");
+    var bmps = Directory.EnumerateFiles(".").Where(path => path.EndsWith(".bmp"));
+    foreach (var bmp in bmps)
+        File.Delete(bmp);
 }
 
 var urls = args.Where(arg => arg.Contains("thelatinlibrary.com"));
@@ -54,7 +56,7 @@ for (int i = 0; i < psis.Count; i++)
     image.SideASideD.Save(pathAD);
     string pathBC = $"{name}_{i:D2}_sideBsideC.bmp";
     Console.WriteLine($"\t\t{pathBC}");
-    image.SideBSideC?.Save($"{i:D2}_sideBsideC.bmp");
+    image.SideBSideC?.Save(pathBC);
 }
 Console.WriteLine("Done.");
 #pragma warning restore CA1416 // Validate platform compatibility
