@@ -86,7 +86,7 @@ public static class BitmapWriter
     {
         float x = sideA.Width - 0.2f * pixelsPerInch;
         float y = sideA.Height - 0.2f * pixelsPerInch;
-        float diameter = 0.05f * pixelsPerInch;
+        float diameter = 0.03f * pixelsPerInch;
         using Graphics g = Graphics.FromImage(sideA);
         using Brush brush = new SolidBrush(Color.Black);
         g.FillEllipse(brush, x: x, y: y, width: diameter, height: diameter);
