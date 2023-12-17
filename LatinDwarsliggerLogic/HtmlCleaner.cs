@@ -16,6 +16,7 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
+            formatted = formatted.DeleteATags();
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
             formatted = formatted.StripLineNumbers();
@@ -69,19 +70,25 @@ namespace LatinDwarsliggerLogic
         {
             return verses
                 .Select(verse => verse.Replace("&nbsp;", ""))
-                .Select(DeleteSpanTags);
+                .Select(line => DeleteTags(line, "span"));
         }
 
         /// <summary>
-        /// Find opening "span" tag and delete everything through its close
+        /// Find opening of given tag and delete everything through its close
         /// </summary>
-        private static string DeleteSpanTags(string line)
+        private static string DeleteTags(string line, string tag)
         {
-            int start = line.IndexOf("<span");
+            int start = line.IndexOf($"<{tag}");
             if (start == -1) return line; // no span to delete
-            int end = line.IndexOf("</span>");
+            int end = line.IndexOf($"</{tag}>");
             if (end == -1) return line; // badly formed line; ignore
-            return string.Concat(line.AsSpan(0, start), line.AsSpan(end + 7));
+            int endTagCharCount = tag.Length + 3;
+            return string.Concat(line.AsSpan(0, start), line.AsSpan(end + endTagCharCount));
+        }
+
+        private static IEnumerable<string> DeleteATags(this IEnumerable<string> lines)
+        {
+            return lines.Select(line => DeleteTags(line, "a").Replace("[]",""));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
