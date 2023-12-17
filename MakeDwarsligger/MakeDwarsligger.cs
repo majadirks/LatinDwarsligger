@@ -1,17 +1,13 @@
-﻿#pragma warning disable CA1416 // Validate platform compatibility
+﻿// Run this tool from the command line by supp
+
 using LatinDwarsliggerLogic;
 
 if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
 {
     Console.WriteLine("Please provide the URL of a Latin Library text.");
+    Console.WriteLine("For example:");
+    Console.WriteLine("\t.\\MakeDwarsligger.exe \"https://www.thelatinlibrary.com/valeriusflaccus1.html\"");
     return;
-}
-
-if (args.Where(arg => arg.ToLower().Equals("delete_bmps")).Any())
-{
-    var bmps = Directory.EnumerateFiles(".").Where(path => path.EndsWith(".bmp"));
-    foreach (var bmp in bmps)
-        File.Delete(bmp);
 }
 
 var urls = args.Where(arg => arg.Contains("thelatinlibrary.com"));
@@ -36,6 +32,7 @@ Console.WriteLine($"Arranging {columns.Count()} columns into half-sides...");
 var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
 Console.WriteLine($"Arranging {halfSides.Count()} half-sides into sheets...");
 var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides).ToArray();
+
 Console.WriteLine("Generating images...");
 
 List<PaperSheetImages> psis = [];
@@ -46,17 +43,10 @@ for (int i = 0; i < pages.Length; i++)
     psis.Add(page.ToBitmaps(arr));
 }
 
-Console.WriteLine($"Saving {psis.Count} images...");
-for (int i = 0; i < psis.Count; i++)
-{
-    Console.WriteLine($"\tSaving page {i + 1} of {psis.Count}...");
-    var image = psis[i];
-    string pathAD = $"{name}_{i:D2}_sideAsideD.bmp";
-    Console.WriteLine($"\t\t{pathAD}");
-    image.SideASideD.Save(pathAD);
-    string pathBC = $"{name}_{i:D2}_sideBsideC.bmp";
-    Console.WriteLine($"\t\t{pathBC}");
-    image.SideBSideC?.Save(pathBC);
-}
+string pdfPath = $"{name}.pdf";
+Console.WriteLine($"Generating PDF '{pdfPath}'...");
+IProgress<string> logger = new Progress<string>(str => Console.WriteLine($"\t{str}"));
+
+DwarsliggerPdf.GeneratePdf(pdfPath, psis, logger);
+
 Console.WriteLine("Done.");
-#pragma warning restore CA1416 // Validate platform compatibility
