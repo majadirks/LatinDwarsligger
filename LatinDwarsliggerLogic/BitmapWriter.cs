@@ -93,6 +93,16 @@ public static class BitmapWriter
         return sideA;
     }
 
+    private static Bitmap DrawLineInMiddleOfPage(this Bitmap pageSide)
+    {
+        using Graphics g = Graphics.FromImage(pageSide);
+        using Pen pen = new(Color.Black);
+        Point start = new(x: 0, y: pageSide.Height / 2);
+        Point end = new Point(x: pageSide.Width, y: pageSide.Height / 2);
+        g.DrawLine(pen, start, end);
+        return pageSide;
+    }
+
     private static Bitmap GetSideASideDBitmap(this PaperSheet paperSheet, Arranger arranger)
     {
         int pixelsPerInch = arranger.PixelsPerInch;
@@ -124,7 +134,7 @@ public static class BitmapWriter
             Graphics g = FromBitmap(sideASideD);
             g.DrawImage(sideA, x: 0, y: 0);
         }
-        
+        sideASideD.DrawLineInMiddleOfPage();
         return sideASideD;
     }
 
