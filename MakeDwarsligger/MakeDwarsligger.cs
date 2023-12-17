@@ -1,6 +1,4 @@
-﻿// Run this tool from the command line by supp
-
-using LatinDwarsliggerLogic;
+﻿using LatinDwarsliggerLogic;
 
 if (args.Length == 0 || !args.Where(arg => arg.Contains("thelatinlibrary.com")).Any())
 {
