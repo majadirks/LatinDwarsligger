@@ -115,7 +115,7 @@ namespace LatinDwarsliggerLogic
             return lines.Select(
                 line => 
                     line.DeleteTags(tag)
-                    .Replace($"<{tag}>", "") //clean up any tags (eg <link>) that don't have a closing tag
+                    .Replace($"<{tag}>", "", StringComparison.InvariantCultureIgnoreCase) //clean up any tags (eg <link>) that don't have a closing tag
                     .Replace("[]",""));
         }
 
@@ -133,11 +133,11 @@ namespace LatinDwarsliggerLogic
         private static IEnumerable<string> FormatEmDashes(this IEnumerable<string> lines)
         {
             // &#151; is not an em dash, but Latin Library treats it as one.
-            return lines.Select(line => line.Replace("&#151;", "—"));
+            return lines.Select(line => line.Replace("&#151;", "—").Replace("&#151", "—"));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)
-        => lines.Select(line => line.Replace("</p>", ""))
+        => lines.Select(line => line.Replace("</p>", "", StringComparison.InvariantCultureIgnoreCase))
                 .Where(line => !string.IsNullOrEmpty(line));
 
         public static IEnumerable<string> MoveParagraphBeginTagsToOwnLine(this IEnumerable<string> lines)
@@ -146,10 +146,9 @@ namespace LatinDwarsliggerLogic
             foreach (string line in lines)
             {
                 string copy = new(line);
-                copy = copy.Replace("<P>", "<p>").Replace("</P>","</p>");
-                while (copy.Contains("<p>") && copy.Length > 3)
+                while (copy.Contains("<p>", StringComparison.InvariantCultureIgnoreCase) && copy.Length > 3)
                 {
-                    int startIndex = copy.IndexOf("<p>");
+                    int startIndex = copy.IndexOf("<p>", StringComparison.InvariantCultureIgnoreCase);
                     if (startIndex > 0)
                         newLines.Add(copy[..startIndex]);
                     newLines.Add("<p>");
@@ -193,11 +192,12 @@ namespace LatinDwarsliggerLogic
                 string line = inputArray[i];
                 copy.Add(line);
 
-                if (line != "<p>") continue; 
+                if (!line.Equals("<p>", StringComparison.InvariantCultureIgnoreCase)) 
+                    continue; 
 
                 // At this point, we've just added a <p> tag,
                 // so skip any subsequent <p> tags
-                while (line == "<p>" && i < inputArray.Length - 1)
+                while (!line.Equals("<p>", StringComparison.InvariantCultureIgnoreCase) && i < inputArray.Length - 1)
                 {
                     i++;
                     line = inputArray[i];
@@ -205,19 +205,24 @@ namespace LatinDwarsliggerLogic
                 // We've reached the next non-<p> line, so add it
                 copy.Add(line);
             }
-            if (copy.LastOrDefault() == "<p>") // Don't need a <p> at the end
+            // Don't need a <p> at the end
+            if (copy.Count > 0 && copy.Last().Equals("<p>", StringComparison.InvariantCultureIgnoreCase)) 
                 copy = copy[0..(copy.Count - 1)];
             return copy;
         }
 
         public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
         {
-            return text.Select(line => line.Replace("<div>", ""));
+            return text.Select(line => line.Replace("<div>", "", StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static IEnumerable<string> FormatAngleBrackets(this IEnumerable<string> text)
         {
-            return text.Select(line => line.Replace("&lt;", "<").Replace("&gt;", ">"));
+            return text.Select(line => line
+            .Replace("&lt;", "<", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&lt", "<", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&gt;", ">", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&gt", ">", StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static IEnumerable<Paragraph> ParseTextIntoChunks(this IEnumerable<string> lines)
@@ -227,12 +232,12 @@ namespace LatinDwarsliggerLogic
             for(int i = 0; i < lineArray.Length; i++)
             {
                 string line = lineArray[i];
-                if (line == "<p>" && i < lineArray.Length - 1)
+                if (line.Equals("<p>", StringComparison.InvariantCultureIgnoreCase) && i < lineArray.Length - 1)
                 {
                     i++;
                     line = lineArray[i];
                     var linesInChunk = new List<string>();
-                    while (i < lineArray.Length - 1 && lineArray[i] != "<p>")
+                    while (i < lineArray.Length - 1 && !lineArray[i].Equals("<p>", StringComparison.InvariantCultureIgnoreCase))
                     {
                         linesInChunk.Add(line);
                         i++;
@@ -244,7 +249,7 @@ namespace LatinDwarsliggerLogic
                 {
                     chunks.Add(new([line]));
                 }
-                if (i < lineArray.Length && lineArray[i] == "<p>")
+                if (i < lineArray.Length && lineArray[i].Equals("<p>", StringComparison.InvariantCultureIgnoreCase))
                     i--;
             }
             return chunks.Where(chunk => chunk.Any(line => !string.IsNullOrWhiteSpace(line)));
