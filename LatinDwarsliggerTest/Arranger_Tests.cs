@@ -75,5 +75,23 @@ public class Arranger_Tests
         var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
     }
 
+    [TestMethod]
+    public void BreakLongWordAtChar()
+    {
+        // Arrange
+        string longString = "Quae res in civitate " + "duae plurimum possunt, eae contra nos ambae faciunt in hoc tempore, summa gratia et eloquentia; quarum alterum, C. Aquili, vereor, alteram metuo. Eloquentia Q. Hortensi ne me in dicendo impediat, non nihil commoveor, gratia Sex. Naevi ne P. Quinctio noceat, id vero non mediocriter pertimesco. Neque hoc tanto opere querendum videretur, haec summa in illis esse, si in nobis essent saltem mediocria; verum ita se res habet, ut ego, qui neque usu satis et ingenio parum possum, cum patrono disertissimo comparer, P. Quinctius, cui tenues opes, nullae facultates, exiguae amicorum copiae sunt, cum adversario gratiosissimo contendat.".Replace(" ", "");
+        Paragraph paragraph = new Paragraph(new List<string> { longString });
+        Arranger arr = Arranger.Default;
+
+        // Act
+        var columns = arr.ArrangeParagraphsIntoColumns(new List<Paragraph> { paragraph } );
+
+        // Assert
+        var contents = columns.Single().Contents;
+        Assert.AreEqual("Quae res in civitate",contents.First().Trim());
+        Assert.IsTrue(contents.Skip(1).First().StartsWith("duaeplurimumpossunt"));
+        Assert.IsTrue(contents.Skip(2).Any());
+    }
+
 }
 #pragma warning restore CA1416 // Validate platform compatibility
