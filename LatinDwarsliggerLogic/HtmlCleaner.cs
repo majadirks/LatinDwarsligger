@@ -17,6 +17,7 @@ namespace LatinDwarsliggerLogic
         {
             var formatted = lines.StripTagAttributes();
             formatted = formatted.DeleteATags();
+            formatted = formatted.DeleteBoldTags();
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
             formatted = formatted.StripLineNumbers();
@@ -40,15 +41,15 @@ namespace LatinDwarsliggerLogic
             for (int i = 0; i < line.Length; i++)
             {
                 char c = line[i];
-                if (c == '<')
+                if (c == '<') // found a tag
                 {
-                    bool isEnd = i < line.Length - 1 && line[i + 1] == '/';
-                    if (isEnd)
+                    bool isClosingTag = i < line.Length - 1 && line[i + 1] == '/';
+                    if (isClosingTag)
                     {
                         copy.Add(c);
                         continue;
                     }
-                    while (c != ' ' && i < line.Length - 1)
+                    while (c != ' ' && c != '>' && i < line.Length - 1)
                     {
                         copy.Add(c);
                         i++;
@@ -92,6 +93,12 @@ namespace LatinDwarsliggerLogic
         private static IEnumerable<string> DeleteATags(this IEnumerable<string> lines)
         {
             return lines.Select(line => DeleteTags(line, "a").Replace("[]",""));
+        }
+
+        private static IEnumerable<string> DeleteBoldTags(this IEnumerable<string> lines)
+        {
+            // Don't delete the bolded content, just the tags
+            return lines.Select(line => line.Replace("<b>", "").Replace("</b>", ""));
         }
 
         public static IEnumerable<string> RemoveParagraphCloseTags(this IEnumerable<string> lines)

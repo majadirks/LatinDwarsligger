@@ -62,6 +62,20 @@ public class Arranger_Tests
     }
 
     [TestMethod]
+    public void ArrangeCatullusIntoPages()
+    {
+        // Arrange
+        string path = "resources/Catullus.htm";
+        var paragraphs = HtmlCleaner.FormatHtmlFile(path);
+        Arranger arr = Arranger.Default;
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+
+        // Act
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides);
+    }
+
+    [TestMethod]
     public void ArrangeApuleiusIntoPages()
     {
         // Arrange
