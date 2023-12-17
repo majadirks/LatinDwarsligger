@@ -12,14 +12,29 @@ namespace LatinDwarsliggerLogic
     {
         public static IEnumerable<Paragraph> FormatHtmlFile(string path)
             => File.ReadAllLines(path).FormatHtmlCode();
-        
+
+        public static async Task<IEnumerable<Paragraph>> FormatHtmlFromUrl(string url)
+        {
+            HttpClient client = new();
+            string html = await client.GetStringAsync(url);
+            string[] lines = html.Split('\n');
+            return FormatHtmlCode(lines);
+
+        }
+
         public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
 
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
-            formatted = formatted.DeleteTags("a").DeleteTags("title").DeleteTags("link");
+            formatted = formatted.DeleteTags("a")
+                .DeleteTags("title")
+                .DeleteTags("link")
+                .DeleteTags("font")
+                .DeleteTags("center")
+                .DeleteTags("hr")
+                .DeleteTags("blockquote");
             formatted = formatted.DeleteBoldTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
@@ -79,7 +94,7 @@ namespace LatinDwarsliggerLogic
         /// <summary>
         /// Find opening of given tag and delete everything through its close
         /// </summary>
-        private static string DeleteTags(string line, string tag)
+        private static string DeleteTags(this string line, string tag)
         {
             while (line.Contains($"<{tag}"))
             {
@@ -99,8 +114,10 @@ namespace LatinDwarsliggerLogic
         {
             return lines.Select(
                 line => 
-                    DeleteTags(line, tag)
+                    line.DeleteTags(tag)
+                    .DeleteTags(tag.ToUpper())
                     .Replace($"<{tag}>", "") //clean up any tags (eg <link>) that don't have a closing tag
+                    .Replace($"<{tag.ToUpper()}>", "")
                     .Replace("[]",""));
         }
 
@@ -126,6 +143,7 @@ namespace LatinDwarsliggerLogic
             foreach (string line in lines)
             {
                 string copy = new(line);
+                copy = copy.Replace("<P>", "<p>").Replace("</P>","</p>");
                 while (copy.Contains("<p>") && copy.Length > 3)
                 {
                     int startIndex = copy.IndexOf("<p>");
@@ -152,7 +170,9 @@ namespace LatinDwarsliggerLogic
             var x = string.
                 Join(" ", text)
                 .Split("<br>")
-                .SelectMany(str => str.Split("</br>"));
+                .SelectMany(str =>  str.Split("<BR>"))
+                .SelectMany(str => str.Split("</br>"))
+                .SelectMany(str => str.Split("</BR>"));
             var y = x
                 .MoveParagraphBeginTagsToOwnLine()
                 .RemoveParagraphCloseTags()
@@ -182,7 +202,7 @@ namespace LatinDwarsliggerLogic
                 // We've reached the next non-<p> line, so add it
                 copy.Add(line);
             }
-            if (copy.Last() == "<p>") // Don't need a <p> at the end
+            if (copy.LastOrDefault() == "<p>") // Don't need a <p> at the end
                 copy = copy[0..(copy.Count - 1)];
             return copy;
         }

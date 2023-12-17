@@ -20,11 +20,8 @@ string url = args.Where(arg => arg.Contains("thelatinlibrary.com")).Single();
 // eg "https://www.thelatinlibrary.com/carm.bur.html" has a name of "carm_bur"
 string name = string.Join("_", url.Split("/").Last().Split(".").SkipLast(1));
 
-HttpClient client = new HttpClient();
-Console.WriteLine("Fetching page...");
-string html = await client.GetStringAsync(url);
 Console.WriteLine("Parsing HTML...");
-var paragraphs = HtmlCleaner.FormatHtmlCode([html]);
+var paragraphs = await HtmlCleaner.FormatHtmlFromUrl(url);
 Console.WriteLine($"Arranging {paragraphs.Count()} paragraphs into columns ...");
 Arranger arr = Arranger.Default;
 var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
