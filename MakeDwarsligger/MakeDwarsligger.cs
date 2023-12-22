@@ -47,4 +47,4 @@ IProgress<string> logger = new Progress<string>(str => Console.WriteLine($"\t{st
 
 DwarsliggerPdf.GeneratePdf(pdfPath, psis, logger);
 
-Console.WriteLine("Done.");
+Console.WriteLine("Done. Please print PDF double-sided (flip on short edge).");
