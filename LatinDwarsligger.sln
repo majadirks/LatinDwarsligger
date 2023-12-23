@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeDwarsligger", "MakeDwarsligger\MakeDwarsligger.csproj", "{D56FCD7F-FD2D-4F03-93FE-A7268080D5C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LatinDwarsliggerUi", "LatinDwarsliggerUi\LatinDwarsliggerUi.csproj", "{0EF0F0EC-4BBF-4A00-856B-E17EDC726EDA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E3B7E064-F06A-4554-AE49-E020E5584C5C} = {E3B7E064-F06A-4554-AE49-E020E5584C5C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
