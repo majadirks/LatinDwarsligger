@@ -20,6 +20,7 @@ public partial class Dwarsligger : Form
 
     private async void goButton_Click(object sender, EventArgs e)
     {
+        goButton.Enabled = false;
         using Arranger? arr = await ArrangerFromInputs();
         if (arr == null) return;
         var result = saveFileDialog.ShowDialog();
@@ -30,11 +31,11 @@ public partial class Dwarsligger : Form
         Log("Parsing HTML...");
         var paragraphs = await HtmlCleaner.FormatHtmlFromUrl(url);
         Log($"Arranging {paragraphs.Count()} paragraphs into columns ...");
-        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        var columns = await Task.Run(() => arr.ArrangeParagraphsIntoColumns(paragraphs));
         Log($"Arranging {columns.Count()} columns into half-sides...");
-        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+        var halfSides = await Task.Run(() => arr.ArrangeColumnsIntoHalfSides(columns));
         Log($"Arranging {halfSides.Count()} half-sides into sheets...");
-        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides).ToArray();
+        var pages = await Task.Run(() => arr.ArrangeHalfSidesIntoPaperSheets(halfSides).ToArray());
 
         Log("Generating images...");
 
@@ -43,20 +44,32 @@ public partial class Dwarsligger : Form
         {
             Log($"\tGenerating image {i + 1} of {pages.Length}...");
             PaperSheet page = pages[i];
-            psis.Add(page.ToBitmaps(arr));
+            var bitmap = await Task.Run(() => page.ToBitmaps(arr));
+            psis.Add(bitmap);
         }
 
         Log($"Generating PDF '{filename}'...");
         IProgress<string> logger = new Progress<string>(str => Log($"\t{str}"));
 
-        DwarsliggerPdf.GeneratePdf(filename, psis, logger);
+        try
+        {
+            await Task.Run(() => DwarsliggerPdf.GeneratePdf(filename, psis, logger));
+            Log("Done. Please print PDF double-sided (flip on short edge).");
+        }
+        catch (Exception ex)
+        {
+            Log(ex.Message);
+        }
+        finally
+        {
+            goButton.Enabled = true;
+        }
 
-        Log("Done. Please print PDF double-sided (flip on short edge).");
     }
 
     private void Log(string msg)
     {
-        logTextbox.AppendText(Environment.NewLine + msg);
+        logTextbox.AppendText(msg + Environment.NewLine); // first line, no newline nee
         logTextbox.Update();
     }
 
