@@ -42,6 +42,10 @@
             topBottomMarginTextbox = new TextBox();
             label1 = new Label();
             ppiTextbox = new TextBox();
+            urlLabel = new Label();
+            urlTextbox = new TextBox();
+            saveFileDialog = new SaveFileDialog();
+            goButton = new Button();
             SuspendLayout();
             // 
             // fontCb
@@ -102,7 +106,6 @@
             pageHeightLabel.Size = new Size(290, 41);
             pageHeightLabel.TabIndex = 6;
             pageHeightLabel.Text = "Page Height (inches)";
-            pageHeightLabel.Click += pageHeightLabel_Click;
             // 
             // pageHeightTextbox
             // 
@@ -159,11 +162,44 @@
             ppiTextbox.Size = new Size(119, 47);
             ppiTextbox.TabIndex = 13;
             // 
+            // urlLabel
+            // 
+            urlLabel.AutoSize = true;
+            urlLabel.Location = new Point(818, 54);
+            urlLabel.Name = "urlLabel";
+            urlLabel.Size = new Size(472, 41);
+            urlLabel.TabIndex = 14;
+            urlLabel.Text = "Enter URL from thelatinlibrary.com";
+            // 
+            // urlTextbox
+            // 
+            urlTextbox.Location = new Point(819, 105);
+            urlTextbox.Name = "urlTextbox";
+            urlTextbox.Size = new Size(861, 47);
+            urlTextbox.TabIndex = 15;
+            // 
+            // saveFileDialog
+            // 
+            saveFileDialog.Filter = "PDF files|*.pdf";
+            // 
+            // goButton
+            // 
+            goButton.Location = new Point(835, 217);
+            goButton.Name = "goButton";
+            goButton.Size = new Size(246, 110);
+            goButton.TabIndex = 16;
+            goButton.Text = "Go!";
+            goButton.UseVisualStyleBackColor = true;
+            goButton.Click += goButton_Click;
+            // 
             // Dwarsligger
             // 
             AutoScaleDimensions = new SizeF(17F, 41F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1196, 647);
+            ClientSize = new Size(1881, 647);
+            Controls.Add(goButton);
+            Controls.Add(urlTextbox);
+            Controls.Add(urlLabel);
             Controls.Add(ppiTextbox);
             Controls.Add(label1);
             Controls.Add(topBottomMarginTextbox);
@@ -200,5 +236,9 @@
         private TextBox topBottomMarginTextbox;
         private Label label1;
         private TextBox ppiTextbox;
+        private Label urlLabel;
+        private TextBox urlTextbox;
+        private SaveFileDialog saveFileDialog;
+        private Button goButton;
     }
 }

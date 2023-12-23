@@ -14,11 +14,14 @@ public partial class Dwarsligger : Form
         leftRightMarginTextbox.Text = defaultArranger.LeftRightMarginInches.ToString();
         topBottomMarginTextbox.Text = defaultArranger.TopBottomMarginInches.ToString();
         ppiTextbox.Text = defaultArranger.PixelsPerInch.ToString();
+        urlTextbox.Text = @"https://www.thelatinlibrary.com/vergil/aen1.shtml";
     }
 
-    private void pageHeightLabel_Click(object sender, EventArgs e)
+    private void goButton_Click(object sender, EventArgs e)
     {
-
+        // todo: validate inputs
+        var result = saveFileDialog.ShowDialog();
+        ;
     }
 }
 
