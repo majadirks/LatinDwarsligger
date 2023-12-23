@@ -46,6 +46,7 @@
             urlTextbox = new TextBox();
             saveFileDialog = new SaveFileDialog();
             goButton = new Button();
+            logTextbox = new TextBox();
             SuspendLayout();
             // 
             // fontCb
@@ -192,11 +193,21 @@
             goButton.UseVisualStyleBackColor = true;
             goButton.Click += goButton_Click;
             // 
+            // logTextbox
+            // 
+            logTextbox.Location = new Point(1193, 209);
+            logTextbox.Multiline = true;
+            logTextbox.Name = "logTextbox";
+            logTextbox.ScrollBars = ScrollBars.Vertical;
+            logTextbox.Size = new Size(644, 376);
+            logTextbox.TabIndex = 17;
+            // 
             // Dwarsligger
             // 
             AutoScaleDimensions = new SizeF(17F, 41F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1881, 647);
+            Controls.Add(logTextbox);
             Controls.Add(goButton);
             Controls.Add(urlTextbox);
             Controls.Add(urlLabel);
@@ -240,5 +251,6 @@
         private TextBox urlTextbox;
         private SaveFileDialog saveFileDialog;
         private Button goButton;
+        private TextBox logTextbox;
     }
 }

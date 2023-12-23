@@ -25,9 +25,39 @@ public partial class Dwarsligger : Form
         var result = saveFileDialog.ShowDialog();
         string filename = saveFileDialog.FileName;
         if (string.IsNullOrWhiteSpace(filename)) return;
+        string url = urlTextbox.Text.Trim();
 
-        
+        Log("Parsing HTML...");
+        var paragraphs = await HtmlCleaner.FormatHtmlFromUrl(url);
+        Log($"Arranging {paragraphs.Count()} paragraphs into columns ...");
+        var columns = arr.ArrangeParagraphsIntoColumns(paragraphs);
+        Log($"Arranging {columns.Count()} columns into half-sides...");
+        var halfSides = arr.ArrangeColumnsIntoHalfSides(columns);
+        Log($"Arranging {halfSides.Count()} half-sides into sheets...");
+        var pages = arr.ArrangeHalfSidesIntoPaperSheets(halfSides).ToArray();
 
+        Log("Generating images...");
+
+        List<PaperSheetImages> psis = [];
+        for (int i = 0; i < pages.Length; i++)
+        {
+            Log($"\tGenerating image {i + 1} of {pages.Length}...");
+            PaperSheet page = pages[i];
+            psis.Add(page.ToBitmaps(arr));
+        }
+
+        Log($"Generating PDF '{filename}'...");
+        IProgress<string> logger = new Progress<string>(str => Log($"\t{str}"));
+
+        DwarsliggerPdf.GeneratePdf(filename, psis, logger);
+
+        Log("Done. Please print PDF double-sided (flip on short edge).");
+    }
+
+    private void Log(string msg)
+    {
+        logTextbox.AppendText(Environment.NewLine + msg);
+        logTextbox.Update();
     }
 
     private async Task<Arranger?> ArrangerFromInputs()
@@ -81,14 +111,3 @@ public partial class Dwarsligger : Form
     }
 
 }
-
-/*
-*   public static Arranger Default = new (
-        fontFamilyName:"Arial", 
-        emSizePoints: 11, 
-        pageDoubleHeightInches: 8.5f, 
-        pageWidthInches: 8.5f, 
-        leftRightMarginInches: 0.2f, 
-        topBottomMarginInches: 0.2f,
-        pixelsPerInch: 320);
-*/
