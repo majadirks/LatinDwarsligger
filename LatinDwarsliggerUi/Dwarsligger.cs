@@ -65,7 +65,7 @@ public partial class Dwarsligger : Form
         
     }
 
-    private async Task<bool> ValidUrlAsync(string url)
+    private static async Task<bool> ValidUrlAsync(string url)
     {
         try
         {
