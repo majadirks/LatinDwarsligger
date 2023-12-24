@@ -37,6 +37,7 @@ public class Arranger : IDisposable
     public Arranger(string fontFamilyName, float emSizePoints, float pageDoubleHeightInches, float pageWidthInches, float leftRightMarginInches, float topBottomMarginInches, int pixelsPerInch)
     {
         disposed = false;
+        FontSizePoints = emSizePoints;
         float emSizeInches = emSizePoints / TYPOGRAPHIC_POINTS_PER_INCH;
         PageDoubleHeightInches = pageDoubleHeightInches;
         PageWidthInches = pageWidthInches;
@@ -51,6 +52,7 @@ public class Arranger : IDisposable
         measureString = line => graphics.MeasureString(text: line, font: Font);
     }
 
+    public float FontSizePoints { get; init; }
     private readonly Bitmap bitmap;
     private readonly Graphics graphics;
     private readonly StringMeasurer measureString;
