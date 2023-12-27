@@ -22,10 +22,18 @@ public partial class Dwarsligger : Form
     {
         goButton.Enabled = false;
         using Arranger? arr = await ArrangerFromInputs();
-        if (arr == null) return;
+        if (arr == null)
+        {
+            goButton.Enabled = true;
+            return;
+        }
         var result = saveFileDialog.ShowDialog();
         string filename = saveFileDialog.FileName;
-        if (string.IsNullOrWhiteSpace(filename)) return;
+        if (string.IsNullOrWhiteSpace(filename))
+        {
+            goButton.Enabled = true;
+            return;
+        }
         string url = urlTextbox.Text.Trim();
 
         Log("Parsing HTML...");
