@@ -20,6 +20,7 @@ public partial class Dwarsligger : Form
 
     private async void goButton_Click(object sender, EventArgs e)
     {
+        logTextbox.Text = "";
         goButton.Enabled = false;
         using Arranger? arr = await ArrangerFromInputs();
         if (arr == null)
