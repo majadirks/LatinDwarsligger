@@ -34,7 +34,8 @@ namespace LatinDwarsliggerLogic
                 .DeleteTags("font")
                 .DeleteTags("center")
                 .DeleteTags("hr")
-                .DeleteTags("blockquote");
+                .DeleteTags("blockquote")
+                .ToList();
             formatted = formatted.DeleteBoldAndItalicTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
