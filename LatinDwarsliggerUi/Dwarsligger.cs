@@ -78,7 +78,7 @@ public partial class Dwarsligger : Form
 
     private void Log(string msg)
     {
-        logTextbox.AppendText(msg + Environment.NewLine); // first line, no newline nee
+        logTextbox.AppendText(msg + Environment.NewLine);
         logTextbox.Update();
     }
 
