@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace LatinDwarsliggerLogic
 {
@@ -25,21 +26,14 @@ namespace LatinDwarsliggerLogic
         public static IEnumerable<Paragraph> FormatHtmlCode(this string[] lines)
         {
             var formatted = lines.StripTagAttributes();
-
             formatted = formatted.MoveParagraphBeginTagsToOwnLine();
             formatted = formatted.SplitOnBrTags();
             formatted = formatted.DeleteTags("a")
-                .DeleteTags("title")
                 .DeleteTags("link")
-                .DeleteTags("font")
-                .DeleteTags("center")
-                .DeleteTags("hr")
-                .DeleteTags("blockquote")
                 .ToList();
-            formatted = formatted.DeleteBoldAndItalicTags();
+            formatted = formatted.RemovePairedTags();
             formatted = formatted.StripLineNumbers();
             formatted = formatted.RemoveParagraphCloseTags();
-            formatted = formatted.RemoveDivTags();
             formatted = formatted.FormatAngleBrackets();
             formatted = formatted.FormatEmDashes();
             formatted = formatted.Skip(1); // remove header stuff
@@ -118,17 +112,6 @@ namespace LatinDwarsliggerLogic
                     line.DeleteTags(tag)
                     .Replace($"<{tag}>", "", StringComparison.InvariantCultureIgnoreCase) //clean up any tags (eg <link>) that don't have a closing tag
                     .Replace("[]",""));
-        }
-
-        private static IEnumerable<string> DeleteBoldAndItalicTags(this IEnumerable<string> lines)
-        {
-            // Don't delete the bolded content, just the tags.
-            // Ironic that we are deleting italic tags from Italic texts, but there you go.
-            return lines.Select(line => line
-            .Replace("<b>", "", StringComparison.InvariantCultureIgnoreCase)
-            .Replace("</b>", "", StringComparison.InvariantCultureIgnoreCase)
-            .Replace("<i>", "", StringComparison.InvariantCultureIgnoreCase)
-            .Replace("</i>", "", StringComparison.InvariantCultureIgnoreCase));
         }
 
         private static IEnumerable<string> FormatEmDashes(this IEnumerable<string> lines)
@@ -216,18 +199,45 @@ namespace LatinDwarsliggerLogic
             return copy;
         }
 
-        public static IEnumerable<string> RemoveDivTags(this IEnumerable<string> text)
-        {
-            return text.Select(line => line.Replace("<div>", "", StringComparison.InvariantCultureIgnoreCase));
-        }
-
         public static IEnumerable<string> FormatAngleBrackets(this IEnumerable<string> text)
         {
             return text.Select(line => line
             .Replace("&lt;", "<", StringComparison.InvariantCultureIgnoreCase)
             .Replace("&lt", "<", StringComparison.InvariantCultureIgnoreCase)
             .Replace("&gt;", ">", StringComparison.InvariantCultureIgnoreCase)
-            .Replace("&gt", ">", StringComparison.InvariantCultureIgnoreCase));
+            .Replace("&gt", ">", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&laquo;", "«", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&laquo", "«", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&raquo;", "»", StringComparison.InvariantCultureIgnoreCase)
+            .Replace("&raquo", "»", StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private static IEnumerable<string> RemovePairedTags(this IEnumerable<string> lines)
+        {
+            // use regexp, fine everything matching <stuff>; if </stuff> also exists, remove both
+            Regex rx = new Regex(@"\<\w+\>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var tags = lines.SelectMany(line => rx.Matches(line))
+                .Select(match => match.Value)
+                .Distinct()
+                // ignore <p> and <br> tags, which we will actually pay attention to later
+                .Where(val => 
+                    !val.Equals("<p>", StringComparison.InvariantCultureIgnoreCase) &&
+                    !val.Equals("<br>", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+            List<string> strippedLines = new(capacity: lines.Count());
+            foreach (string line in lines)
+            {
+                string copy = line;
+                foreach (string tag in tags)
+                {
+                    string bareTag = tag.Replace("<", "").Replace(">", "");
+                    copy = copy
+                        .Replace(tag, "", StringComparison.InvariantCultureIgnoreCase)
+                        .Replace($"</{bareTag}>", "", StringComparison.InvariantCultureIgnoreCase);
+                }
+                strippedLines.Add(copy);
+            }
+            return strippedLines;
         }
 
         public static IEnumerable<Paragraph> ParseTextIntoChunks(this IEnumerable<string> lines)
