@@ -25,7 +25,7 @@ public delegate SizeF StringMeasurer(string text);
 /// </summary>
 public class Arranger : IDisposable
 {
-    public static Arranger Default = new (
+    public static readonly Arranger Default = new (
             fontFamilyName:"Arial", 
             emSizePoints: 11, 
             pageDoubleHeightInches: 8.5f, 
