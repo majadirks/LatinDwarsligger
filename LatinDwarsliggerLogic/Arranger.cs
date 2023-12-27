@@ -83,6 +83,7 @@ public class Arranger : IDisposable
 
         string[] lines = paragraphs
             .SelectMany(p => p.Lines.Append(" ")) // Add paragraph break after each paragraph
+            .Where(LineIsMeasurable)
             .SelectMany(BreakLineAtPage) // make sure lines don't exceed max allowable width
             .SkipLast(1) // ignore paragraph break
             .ToArray();
@@ -122,6 +123,19 @@ public class Arranger : IDisposable
             columns.Add(col);
         }
         return columns;
+    }
+
+    private bool LineIsMeasurable(string line)
+    {
+        try
+        {
+            SizeF _ = measureString(line);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public IEnumerable<HalfSide> ArrangeColumnsIntoHalfSides(IEnumerable<Column> columns)
