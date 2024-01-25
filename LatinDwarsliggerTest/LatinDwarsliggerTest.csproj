@@ -40,7 +40,7 @@
     <None Update="resources\Catullus.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="resources\Los_Anales_de_Cayo_Cornelio_Tácito._Tomo_I_%281890%29.pdf">
+    <None Update="resources\Tacitus.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
